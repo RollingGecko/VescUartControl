@@ -2,6 +2,14 @@ VescUartControl library
 
 Library for arduino to interface over UART with the Vesc BLDC controler (http://vedder.se/2015/01/vesc-open-source-esc/)
 
+The files libraries
+
+crc
+datatypes
+buffer
+
+are directly forked from https://github.com/vedderb/bldc
+
 Copyright 2015 - 2017 Andreas Chaitidis Andreas.Chaitidis@gmail.com
 
 This program is free software : you can redistribute it and / or modify
