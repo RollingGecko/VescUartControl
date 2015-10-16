@@ -1,5 +1,6 @@
 /*
 	Copyright 2012-2014 Benjamin Vedder	benjamin@vedder.se
+	Adapted by Andreas Chaitidis for the VescUartControl Arduino Library
 
 	This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -378,6 +379,7 @@ typedef struct {
 //} MOTE_PACKET;
 //
 
+// Added by AC to store measured values
 struct bldcMeasure {
 	//7 Values int16_t not read(14 byte)
 	float avgMotorCurrent;
