@@ -88,12 +88,17 @@ bool UnpackPayload(uint8_t* message, int lenMes, uint8_t* payload, int lenPay) {
 	crcMessage = message[lenMes - 3] << 8;
 	crcMessage &= 0xFF00;
 	crcMessage += message[lenMes - 2];
+#ifdef DEBUG
 	DEBUGSERIAL.print("SRC received: "); DEBUGSERIAL.println(crcMessage);
+#endif // DEBUG
+
 	//Extract payload:
 	memcpy(payload, &message[2], message[1]);
 
 	crcPayload = crc16(payload, message[1]);
+#ifdef DEBUG
 	DEBUGSERIAL.print("SRC calc: "); DEBUGSERIAL.println(crcPayload);
+#endif
 	if (crcPayload == crcMessage)
 	{
 #ifdef DEBUG
@@ -134,7 +139,10 @@ int PackSendPayload(uint8_t* payload, int lenPay) {
 
 	//Sending package
 	SERIALIO.write(messageSend, count);
+#ifdef DEBUG
 	DEBUGSERIAL.println("UART package send.");
+#endif // DEBUG
+
 	//Returns number of send bytes
 	return count;
 }

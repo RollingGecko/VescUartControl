@@ -13,18 +13,26 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.If not, see <http://www.gnu.org/licenses/>.
+
 */
 
 #ifndef _VESCUART_h
 #define _VESCUART_h
 
+/*TThis library was created on an Adruinio 2560 with different serial ports to have a better possibility
+to debug. The serial ports are define with #define:
+#define SERIALIO Serial1  		for the UART port to VESC
+#define DEBUGSERIAL Serial		for debuging over USB
+So you need here to define the right serial port for your arduino.
+If you want to use debug, uncomment DEBUGSERIAL and define a port.*/
+
 #ifndef SERIALIO
 #define SERIALIO Serial1  
 #endif // !SERIAL
 
-#ifndef DEBUGSERIAL
-#define DEBUGSERIAL Serial
-#endif
+//#ifndef DEBUGSERIAL
+//#define DEBUGSERIAL Serial
+//#endif
 
 #if defined(ARDUINO) && ARDUINO >= 100
 #include "arduino.h"
@@ -62,7 +70,13 @@ void SerialPrint(uint8_t* data, int len);
 //@return true if sucess
 bool VescUartGetValue(struct bldcMeasure& values);
 
+///Sends a command to VESC to control the motor current
+///@param current as float with the current for the motor
+
 void VescUartSetCurrent(float current);
+
+///Sends a command to VESC to control the motor brake
+///@param breakCurrent as float with the current for the brake
 
 void VescUartSetCurrentBrake(float brakeCurrent);
 
