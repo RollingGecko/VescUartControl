@@ -1,4 +1,4 @@
-VescUartControl library
+#VescUartControl library
 
 Library for arduino to interface over UART with the Vesc BLDC controler (http://vedder.se/2015/01/vesc-open-source-esc/)
 
@@ -19,7 +19,7 @@ in the function commands_process_packet. You can write easily own handler functi
 the library buffer.c.
 
 
-Some details to the UART port used in the VESC
+#Some details to the UART port used in the VESC
 
 It is a uint8_t byte stream. 
 First byte 
@@ -35,3 +35,5 @@ next 2 byte for the payload length
 The follwing 2 bytes after teh payload are the checksum. (see crc.h)
 
 The byte stream it terminated with a 0x03.
+
+For more details please refer also to http://vedder.se/2015/10/communicating-with-the-vesc-using-uart/
