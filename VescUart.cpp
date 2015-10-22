@@ -136,11 +136,12 @@ int PackSendPayload(uint8_t* payload, int lenPay) {
 	messageSend[count++] = (uint8_t)(crcPayload >> 8);
 	messageSend[count++] = (uint8_t)(crcPayload & 0xFF);
 	messageSend[count++] = 3;
-
+	messageSend[count] = NULL;
 	//Sending package
 	SERIALIO.write(messageSend, count);
 #ifdef DEBUG
-	DEBUGSERIAL.println("UART package send.");
+	DEBUGSERIAL.print("UART package send: "); SerialPrint(messageSend, count);
+
 #endif // DEBUG
 
 	//Returns number of send bytes
@@ -213,6 +214,18 @@ void VescUartSetCurrentBrake(float brakeCurrent) {
 	buffer_append_int32(payload, (int)(brakeCurrent * 1000), &index);
 	PackSendPayload(payload, 5);
 
+}
+
+void VescUartSetNunchukValues(remotePackage& data) {
+	int32_t ind = 0;
+	uint8_t payload[5];
+	payload[ind++] = COMM_SET_CHUCK_DATA;
+	payload[ind++] = data.valXJoy;
+	payload[ind++] = data.valYJoy;
+	buffer_append_bool(payload, data.valLowerButton, &ind);
+	buffer_append_bool(payload, data.valUpperButton, &ind);
+
+	PackSendPayload(payload, 5);
 }
 
 void SerialPrint(uint8_t* data, int len) {

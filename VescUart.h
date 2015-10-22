@@ -16,8 +16,11 @@ along with this program.If not, see <http://www.gnu.org/licenses/>.
 
 */
 
+#include "Config.h"
+
 #ifndef _VESCUART_h
 #define _VESCUART_h
+
 
 /*TThis library was created on an Adruinio 2560 with different serial ports to have a better possibility
 to debug. The serial ports are define with #define:
@@ -26,13 +29,10 @@ to debug. The serial ports are define with #define:
 So you need here to define the right serial port for your arduino.
 If you want to use debug, uncomment DEBUGSERIAL and define a port.*/
 
-#ifndef SERIALIO
+#ifndef _CONFIG_h
 #define SERIALIO Serial1  
-#endif // !SERIAL
-
-//#ifndef DEBUGSERIAL
-//#define DEBUGSERIAL Serial
-//#endif
+#define DEBUGSERIAL Serial
+#endif
 
 #if defined(ARDUINO) && ARDUINO >= 100
 #include "arduino.h"
@@ -79,6 +79,11 @@ void VescUartSetCurrent(float current);
 ///@param breakCurrent as float with the current for the brake
 
 void VescUartSetCurrentBrake(float brakeCurrent);
+
+///Sends values of a joystick and 2 buttons to VESC to control the nunchuk app
+
+void VescUartSetNunchukValues(remotePackage& data);
+
 
 #endif
 
