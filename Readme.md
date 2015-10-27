@@ -22,6 +22,7 @@ the library buffer.c.
 ##Some details to the UART port used in the VESC
 
 It is a uint8_t byte stream. 
+
 First byte: 
 
 0x02 for payload length of 256 byte >> next byte is for the payload length 
