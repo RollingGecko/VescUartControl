@@ -19,7 +19,7 @@ in the function commands_process_packet. You can write easily own handler functi
 the library buffer.c.
 
 
-#Some details to the UART port used in the VESC
+##Some details to the UART port used in the VESC
 
 It is a uint8_t byte stream. 
 First byte 
