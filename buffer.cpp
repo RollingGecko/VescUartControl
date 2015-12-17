@@ -115,13 +115,13 @@ void buffer_append_bool(uint8_t *buffer,bool value, int32_t *index) {
 
 	if (value == true)
 	{
-		buffer[(*index)++] = 1;
-				
+		buffer[*index] = 1;
+		(*index)++;
 	}
 	else
 	{
-		buffer[(*index)++] = 0;
-		
+		buffer[*index] = 0;
+		(*index)++;
 	}
 
 }
