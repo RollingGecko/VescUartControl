@@ -394,4 +394,15 @@ struct bldcMeasure {
 	long tachometer;
 	long tachometerAbs;
 }	;
+
+//Define remote Package
+
+struct remotePackage {
+
+	int		valXJoy;
+	int		valYJoy;
+	boolean	valUpperButton;
+	boolean	valLowerButton;
+
+};
 #endif /* DATATYPES_H_ */

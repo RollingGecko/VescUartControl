@@ -5,6 +5,8 @@
 */
 
 // the setup function runs once when you press reset or power the board
+// To use VescUartControl stand alone you need to define a config.h file, that should contain the Serial or you have to comment the line
+// #include Config.h out in VescUart.h
 
 //Include libraries copied from VESC
  #include "VescUart.h"
