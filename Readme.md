@@ -23,11 +23,7 @@ The rest shut be comment sufficient in the VescUart.h. Take also a look to the R
 
 ##Requirements to use this library on bldc FW
 
-As long as the handlers are not yet pulled from Vedder please use my fork you can finde here: https://github.com/RollingGecko/bldc.git.
-
-To see the status of the pull request look here: https://github.com/vedderb/bldc/pull/12
-
-The firmware is merged with vedder's and is up to date. 
+The needed canges where already merged by Vedder to the FW. :)
 
 In bldc-tool please activate UART and if needed the nunchuk application. 
 
