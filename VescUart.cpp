@@ -202,7 +202,7 @@ void VescUartSetCurrent(float current) {
 	uint8_t payload[5];
 		
 	payload[index++] = COMM_SET_CURRENT ;
-	buffer_append_int32(payload, (int)(current * 1000), &index);
+	buffer_append_int32(payload, (int32_t)(current * 1000), &index);
 	PackSendPayload(payload, 5);
 }
 
@@ -211,7 +211,7 @@ void VescUartSetCurrentBrake(float brakeCurrent) {
 	uint8_t payload[5];
 
 	payload[index++] = COMM_SET_CURRENT_BRAKE;
-	buffer_append_int32(payload, (int)(brakeCurrent * 1000), &index);
+	buffer_append_int32(payload, (int32_t)(brakeCurrent * 1000), &index);
 	PackSendPayload(payload, 5);
 
 }
