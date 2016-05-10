@@ -16,11 +16,10 @@ along with this program.If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-#include "Config.h"
-
 #ifndef _VESCUART_h
 #define _VESCUART_h
 
+//#include "Config.h" 
 
 /*TThis library was created on an Adruinio 2560 with different serial ports to have a better possibility
 to debug. The serial ports are define with #define:
@@ -39,7 +38,7 @@ If you want to use debug, uncomment DEBUGSERIAL and define a port.*/
 #else
 #include "WProgram.h"
 #endif
-
+ 
 #include "datatypes.h"
 ///PackSendPayload Packs the payload and sends it over Serial.
 ///Define in a Config.h a SERIAL with the Serial in Arduino Style you want to you

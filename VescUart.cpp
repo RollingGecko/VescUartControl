@@ -26,7 +26,7 @@ int ReceiveUartMessage(uint8_t* payloadReceived) {
 
 	//Messages <= 255 start with 2. 2nd byte is length
 	//Messages >255 start with 3. 2nd and 3rd byte is length combined with 1st >>8 and then &0xFF
-
+	 
 	int counter = 0;
 	int endMessage = 256;
 	bool messageRead = false;
@@ -137,12 +137,15 @@ int PackSendPayload(uint8_t* payload, int lenPay) {
 	messageSend[count++] = (uint8_t)(crcPayload & 0xFF);
 	messageSend[count++] = 3;
 	messageSend[count] = NULL;
-	//Sending package
-	SERIALIO.write(messageSend, count);
+
 #ifdef DEBUG
 	DEBUGSERIAL.print("UART package send: "); SerialPrint(messageSend, count);
 
 #endif // DEBUG
+
+	//Sending package
+	SERIALIO.write(messageSend, count);
+
 
 	//Returns number of send bytes
 	return count;
@@ -224,6 +227,12 @@ void VescUartSetNunchukValues(remotePackage& data) {
 	payload[ind++] = data.valYJoy;
 	buffer_append_bool(payload, data.valLowerButton, &ind);
 	buffer_append_bool(payload, data.valUpperButton, &ind);
+
+#ifdef DEBUG
+	DEBUGSERIAL.println("Data reached at VescUartSetNunchuckValues:");
+	DEBUGSERIAL.print("valXJoy = "); DEBUGSERIAL.print(data.valXJoy); DEBUGSERIAL.print(" valYJoy = "); DEBUGSERIAL.println(data.valYJoy);
+	DEBUGSERIAL.print("LowerButton = "); DEBUGSERIAL.print(data.valLowerButton); DEBUGSERIAL.print(" UpperButton = "); DEBUGSERIAL.println(data.valUpperButton);
+#endif
 
 	PackSendPayload(payload, 5);
 }
