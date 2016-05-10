@@ -249,6 +249,7 @@ void SerialPrint(uint8_t* data, int len) {
 	DEBUGSERIAL.println("");
 }
 
+
 void SerialPrint(const bldcMeasure& values) {
 	DEBUGSERIAL.print("avgMotorCurrent: "); DEBUGSERIAL.println(values.avgMotorCurrent);
 	DEBUGSERIAL.print("avgInputCurrent: "); DEBUGSERIAL.println(values.avgInputCurrent);
@@ -260,3 +261,4 @@ void SerialPrint(const bldcMeasure& values) {
 	DEBUGSERIAL.print("tachometer: "); DEBUGSERIAL.println(values.tachometer);
 	DEBUGSERIAL.print("tachometerAbs: "); DEBUGSERIAL.println(values.tachometerAbs);
 }
+

@@ -29,8 +29,16 @@ So you need here to define the right serial port for your arduino.
 If you want to use debug, uncomment DEBUGSERIAL and define a port.*/
 
 #ifndef _CONFIG_h
+
+#ifdef __AVR_ATmega2560__ 
 #define SERIALIO Serial1  
 #define DEBUGSERIAL Serial
+#endif
+
+#ifdef ARDUINO_AVR_NANO
+#define SERIALIO Serial  
+#define DEBUGSERIAL Serial
+#endif
 #endif
 
 #if defined(ARDUINO) && ARDUINO >= 100
