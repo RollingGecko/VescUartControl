@@ -48,6 +48,7 @@ If you want to use debug, uncomment DEBUGSERIAL and define a port.*/
 #endif
  
 #include "datatypes.h"
+#include "local_datatypes.h"
 ///PackSendPayload Packs the payload and sends it over Serial.
 ///Define in a Config.h a SERIAL with the Serial in Arduino Style you want to you
 ///@param: payload as the payload [unit8_t Array] with length of int lenPayload
