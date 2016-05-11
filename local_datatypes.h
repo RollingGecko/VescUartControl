@@ -1,5 +1,5 @@
 #ifndef LOCAL_DATATYPES_H_
-#define LOCAL_DATATYPES_
+#define LOCAL_DATATYPES_H_
 
 // Added by AC to store measured values
 struct bldcMeasure {
