@@ -12,20 +12,23 @@
  #include "VescUart.h"
 #include "datatypes.h"
 
+VescUart Vesc(&Serial);
 
-#define DEBUG
+//#define DEBUG
+#define SERIALIO Serial
 
 void setup() {
 	
 	//Setup UART port
-	Serial1.begin(115200);
+	//Serial.begin(115200);
+	Vesc.begin(115200);
 #ifdef DEBUG
 	//SEtup debug port
 	Serial.begin(115200);
 	#endif
 }
 
-struct bldcMeasure measuredValues;
+//struct bldcMeasure measuredValues;
 	
 // the loop function runs over and over again until power down or reset
 void loop() {
@@ -37,8 +40,8 @@ void loop() {
 	//	len = 0;
 	//}
 
-	if (VescUartGetValue(measuredValues)) {
-		SerialPrint(measuredValues);
+	if (Vesc.VescUartGetValue()) {
+		Vesc.SerialPrint();
 		
 	}
 	else

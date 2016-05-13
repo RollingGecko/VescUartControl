@@ -1,6 +1,8 @@
 #ifndef LOCAL_DATATYPES_H_
 #define LOCAL_DATATYPES_H_
 
+#include <Arduino.h>
+
 // Added by AC to store measured values
 struct bldcMeasure {
 	//7 Values int16_t not read(14 byte)

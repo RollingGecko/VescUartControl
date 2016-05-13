@@ -15,83 +15,87 @@ You should have received a copy of the GNU General Public License
 along with this program.If not, see <http://www.gnu.org/licenses/>.
 
 */
+#ifndef _VESCUART_H
+#define _VESCUART_H
+#pragma once
 
-#ifndef _VESCUART_h
-#define _VESCUART_h
-
-//#include "Config.h" 
-
-/*TThis library was created on an Adruinio 2560 with different serial ports to have a better possibility
-to debug. The serial ports are define with #define:
-#define SERIALIO Serial1  		for the UART port to VESC
-#define DEBUGSERIAL Serial		for debuging over USB
-So you need here to define the right serial port for your arduino.
-If you want to use debug, uncomment DEBUGSERIAL and define a port.*/
-
-#ifndef _CONFIG_h
-
-#ifdef __AVR_ATmega2560__ 
-#define SERIALIO Serial1  
-#define DEBUGSERIAL Serial
-#endif
-
-#ifdef ARDUINO_AVR_NANO
-#define SERIALIO Serial  
-#define DEBUGSERIAL Serial
-#endif
-#endif
-
-#if defined(ARDUINO) && ARDUINO >= 100
-#include "arduino.h"
-#else
-#include "WProgram.h"
-#endif
- 
-#include "datatypes.h"
+#include <Arduino.h>
 #include "local_datatypes.h"
-///PackSendPayload Packs the payload and sends it over Serial.
-///Define in a Config.h a SERIAL with the Serial in Arduino Style you want to you
-///@param: payload as the payload [unit8_t Array] with length of int lenPayload
-///@return the number of bytes send
+#include "datatypes.h"
+class VescUart
+{
+public:
+	VescUart(HardwareSerial *usedSerial);
+	~VescUart();
 
-int PackSendPayload(uint8_t* payload, int lenPay);
+	void begin(unsigned int baud);
 
-///ReceiveUartMessage receives the a message over Serial
-///Define in a Config.h a SERIAL with the Serial in Arduino Style you want to you
-///@parm the payload as the payload [unit8_t Array]
-///@return the number of bytes receeived within the payload
+	///Help Function to print struct bldcMeasure over Serial for Debug
+	///Define in a Config.h the DEBUGSERIAL you want to use
 
-int ReceiveUartMessage(uint8_t* payloadReceived);
+	void SerialPrint();
 
-///Help Function to print struct bldcMeasure over Serial for Debug
-///Define in a Config.h the DEBUGSERIAL you want to use
+	///Help Function to print uint8_t array over Serial for Debug
+	///Define in a Config.h the DEBUGSERIAL you want to use
 
-void SerialPrint(const struct bldcMeasure& values);
+	void SerialPrint(uint8_t* data, int len);
 
-///Help Function to print uint8_t array over Serial for Debug
-///Define in a Config.h the DEBUGSERIAL you want to use
+	///Sends a command to VESC and stores the returned data
+	///@param bldcMeasure struct with received data
+	//@return true if sucess
+	bool VescUartGetValue(void);
 
-void SerialPrint(uint8_t* data, int len);
+	///Sends a command to VESC to control the motor current
+	///@param current as float with the current for the motor
 
-///Sends a command to VESC and stores the returned data
-///@param bldcMeasure struct with received data
-//@return true if sucess
-bool VescUartGetValue(struct bldcMeasure& values);
+	void VescUartSetCurrent(float current);
 
-///Sends a command to VESC to control the motor current
-///@param current as float with the current for the motor
+	///Sends a command to VESC to control the motor brake
+	///@param breakCurrent as float with the current for the brake
 
-void VescUartSetCurrent(float current);
+	void VescUartSetCurrentBrake(float brakeCurrent);
 
-///Sends a command to VESC to control the motor brake
-///@param breakCurrent as float with the current for the brake
+	///Sends values of a joystick and 2 buttons to VESC to control the nunchuk app
 
-void VescUartSetCurrentBrake(float brakeCurrent);
+	void VescUartSetNunchukValues(remotePackage& data);
 
-///Sends values of a joystick and 2 buttons to VESC to control the nunchuk app
+	///Contains all measured Values of Vesc
 
-void VescUartSetNunchukValues(remotePackage& data);
+	struct bldcMeasure vescMeasuredValues;
 
+private:
+	///PackSendPayload Packs the payload and sends it over Serial.
+	///Define in a Config.h a SERIAL with the Serial in Arduino Style you want to you
+	///@param: payload as the payload [unit8_t Array] with length of int lenPayload
+	///@return the number of bytes send
+
+	//int PackSendPayload(uint8_t* payload, int lenPay);
+	void SendMessage(uint8_t* message, int lenMessage);
+	///
+	///
+	///@
+	///@
+	int PackPayload(uint8_t* payload, int lenPay, uint8_t* messageSend);
+
+	///ReceiveUartMessage receives the a message over Serial
+	///Define in a Config.h a SERIAL with the Serial in Arduino Style you want to you
+	///@parm the payload as the payload [unit8_t Array]
+	///@return the number of bytes receeived within the payload
+
+	int ReceiveUartMessage(uint8_t* payloadReceived);
+
+	///
+	///
+	///@
+	///@
+	bool UnpackPayload(uint8_t* message, int lenMes, uint8_t* payload, int lenPa);
+	///
+	///
+	///@
+	///@
+	bool ProcessReadPacket(uint8_t* message, int len);
+
+	HardwareSerial *_Serial;
+};
 
 #endif
-
