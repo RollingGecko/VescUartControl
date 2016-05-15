@@ -41,7 +41,7 @@ void loop() {
 	//}
 
 	if (Vesc.VescUartGetValue()) {
-		Vesc.SerialPrint();
+		Vesc.SerialPrint(&Serial);
 		
 	}
 	else

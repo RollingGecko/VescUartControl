@@ -33,12 +33,12 @@ public:
 	///Help Function to print struct bldcMeasure over Serial for Debug
 	///Define in a Config.h the DEBUGSERIAL you want to use
 
-	void SerialPrint();
+	void SerialPrint(HardwareSerial *debugSerial);
 
 	///Help Function to print uint8_t array over Serial for Debug
 	///Define in a Config.h the DEBUGSERIAL you want to use
 
-	void SerialPrint(uint8_t* data, int len);
+	void SerialPrint(HardwareSerial *debugSerial, uint8_t* data, int len);
 
 	///Sends a command to VESC and stores the returned data
 	///@param bldcMeasure struct with received data
@@ -77,6 +77,13 @@ private:
 	///@
 	int PackPayload(uint8_t* payload, int lenPay, uint8_t* messageSend);
 
+	///
+	///
+	///@
+	///@
+
+	void inline  PackSendPayload(uint8_t* payloadToSend, int lengthPayload);
+
 	///ReceiveUartMessage receives the a message over Serial
 	///Define in a Config.h a SERIAL with the Serial in Arduino Style you want to you
 	///@parm the payload as the payload [unit8_t Array]
@@ -93,9 +100,12 @@ private:
 	///
 	///@
 	///@
-	bool ProcessReadPacket(uint8_t* message, int len);
+	bool ProcessReadPayload(uint8_t* message, int len);
 
 	HardwareSerial *_Serial;
+
+	
+	
 };
 
 #endif
