@@ -1,7 +1,11 @@
 #ifndef LOCAL_DATATYPES_H_
 #define LOCAL_DATATYPES_H_
 
-#include <Arduino.h>
+#if defined(ARDUINO) && ARDUINO >= 100
+#include "arduino.h"
+#else
+#include "WProgram.h"
+#endif
 
 // Added by AC to store measured values
 struct bldcMeasure {

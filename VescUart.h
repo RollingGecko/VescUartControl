@@ -19,7 +19,12 @@ along with this program.If not, see <http://www.gnu.org/licenses/>.
 #define _VESCUART_H
 #pragma once
 
-#include <Arduino.h>
+#if defined(ARDUINO) && ARDUINO >= 100
+#include "arduino.h"
+#else
+#include "WProgram.h"
+#endif
+
 #include "local_datatypes.h"
 #include "datatypes.h"
 class VescUart
