@@ -35,18 +35,21 @@ public:
 
 	void begin(unsigned int baud);
 
+	void SetUartSerial(HardwareSerial *usedSerial);
+
 	///Help Function to print struct bldcMeasure over Serial for Debug
 	///Define in a Config.h the DEBUGSERIAL you want to use
 
+	
 	void SerialPrint(HardwareSerial *debugSerial);
 
 	///Help Function to print uint8_t array over Serial for Debug
-	///Define in a Config.h the DEBUGSERIAL you want to use
+	///@parm Serialport you want to use, data array and length of the array
 
 	void SerialPrint(HardwareSerial *debugSerial, uint8_t* data, int len);
 
-	///Sends a command to VESC and stores the returned data
-	///@param bldcMeasure struct with received data
+	///Sends a command to VESC to send telemetry valzes and stores the returned data
+	///@param void; Data is stored in Class
 	//@return true if sucess
 	bool VescUartGetValue(void);
 
@@ -69,42 +72,42 @@ public:
 	struct bldcMeasure vescMeasuredValues;
 
 private:
-	///PackSendPayload Packs the payload and sends it over Serial.
-	///Define in a Config.h a SERIAL with the Serial in Arduino Style you want to you
-	///@param: payload as the payload [unit8_t Array] with length of int lenPayload
-	///@return the number of bytes send
-
-	//int PackSendPayload(uint8_t* payload, int lenPay);
-	void SendMessage(uint8_t* message, int lenMessage);
+	///SendMessage sends the data over the UART port
 	///
-	///
-	///@
-	///@
+	///@parm message is the message to be send and lenMessage it'S size
+	
+	SendMessage(uint8_t* message, int lenMessage);
+	
+	///Packs the payload in a message as preperation for sending the data to VESC
+	///@parm payload, length of payload and Message array
+	///@return the number of bytes packed
 	int PackPayload(uint8_t* payload, int lenPay, uint8_t* messageSend);
 
-	///
-	///
-	///@
-	///@
-
+	
+	///PackSendPayload Packs the payload and sends it over Serial.
+	///@param: payload as the payload [unit8_t Array] with length of int lenPayload
+	///@return the number of bytes send
 	void inline  PackSendPayload(uint8_t* payloadToSend, int lengthPayload);
 
-	///ReceiveUartMessage receives the a message over Serial
-	///Define in a Config.h a SERIAL with the Serial in Arduino Style you want to you
+	///ReceiveUartMessage receives the from VESC message over Serial
 	///@parm the payload as the payload [unit8_t Array]
 	///@return the number of bytes receeived within the payload
 
-	int ReceiveUartMessage(uint8_t* payloadReceived);
+	int ReceiveMessage(uint8_t* payloadReceived);
 
+	///Unpacks a message from VESC and returns the payload in the referenced array
 	///
+	///@parm: Message from VESC and its length, payload and its length
+	///@return true if success
+
+	bool UnpackPayload(uint8_t* message, int lenMes, uint8_t* payload, int lenPa)
+
+
+	///Handler for the payload from VESC
 	///
-	///@
-	///@
-	bool UnpackPayload(uint8_t* message, int lenMes, uint8_t* payload, int lenPa);
-	///
-	///
-	///@
-	///@
+	///@parm: Message payload and its length
+	///@retun true if payload could be handeled
+
 	bool ProcessReadPayload(uint8_t* message, int len);
 
 	HardwareSerial *_Serial;

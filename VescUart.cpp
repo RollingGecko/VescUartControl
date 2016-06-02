@@ -24,19 +24,26 @@ along with this program.If not, see <http://www.gnu.org/licenses/>.
 
 VescUart::VescUart(HardwareSerial *usedSerial)
 {
-	_Serial = usedSerial;
+	SetUartSerial(&usedSerial);
 }
 
 
 VescUart::~VescUart()
 {
+	SetUartSerial(&Serial);
+
 }
 
 void VescUart::begin(unsigned int baud) {
 	_Serial->begin(baud);
 }
 
-int VescUart::ReceiveUartMessage(uint8_t* messageReceived) {
+void VescUart::SetUartSerial(HardwareSerial * usedSerial)
+{
+	_Serial = usedSerial;
+}
+
+int VescUart::ReceiveMessage(uint8_t* messageReceived) {
 
 	//Messages <= 255 start with 2. 2nd byte is length
 	//Messages >255 start with 3. 2nd and 3rd byte is length combined with 1st >>8 and then &0xFF
@@ -247,7 +254,7 @@ bool VescUart::VescUartGetValue(void) {
 	//SendMessage(messageToSend, lengMessageToSend);
 	PackSendPayload(payload, 1);
 	delay(100); //needed, otherwise data is not read
-	int lenMessageReceived = ReceiveUartMessage(receivedMessage);
+	int lenMessageReceived = ReceiveMessage(receivedMessage);
 	
 	if (UnpackPayload(receivedMessage, lenMessageReceived, payload, receivedMessage[1])) {
 		bool read = ProcessReadPayload(payload, receivedMessage[1]); //returns true if sucessfull
