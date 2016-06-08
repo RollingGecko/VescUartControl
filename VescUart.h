@@ -69,14 +69,14 @@ public:
 
 	///Contains all measured Values of Vesc
 
-	struct bldcMeasure vescMeasuredValues;
+	struct typeTelemetryData vescMeasuredValues;
 
 private:
 	///SendMessage sends the data over the UART port
 	///
 	///@parm message is the message to be send and lenMessage it'S size
 	
-	SendMessage(uint8_t* message, int lenMessage);
+	int SendMessage(uint8_t* message, int lenMessage);
 	
 	///Packs the payload in a message as preperation for sending the data to VESC
 	///@parm payload, length of payload and Message array
@@ -100,7 +100,7 @@ private:
 	///@parm: Message from VESC and its length, payload and its length
 	///@return true if success
 
-	bool UnpackPayload(uint8_t* message, int lenMes, uint8_t* payload, int lenPa)
+	bool UnpackPayload(uint8_t* message, int lenMes, uint8_t* payload, int lenPa);
 
 
 	///Handler for the payload from VESC
@@ -115,5 +115,7 @@ private:
 	
 	
 };
+
+
 
 #endif

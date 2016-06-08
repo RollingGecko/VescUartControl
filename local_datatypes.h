@@ -7,8 +7,8 @@
 #include "WProgram.h"
 #endif
 
-// Added by AC to store measured values
-struct bldcMeasure {
+//store measured values
+struct typeTelemetryData {
 	//7 Values int16_t not read(14 byte)
 	float avgMotorCurrent;
 	float avgInputCurrent;
@@ -30,7 +30,13 @@ struct remotePackage {
 	int		valYJoy;
 	boolean	valUpperButton;
 	boolean	valLowerButton;
-
 };
 
+struct ControlValues{
+
+	int		valXJoy;
+	int		valYJoy;
+	boolean	valUpperButton;
+	boolean	valLowerButton;
+};
 #endif

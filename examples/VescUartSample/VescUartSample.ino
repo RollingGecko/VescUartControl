@@ -9,7 +9,9 @@
 // #include Config.h out in VescUart.h
 
 //Include libraries copied from VESC
- #include "VescUart.h"
+#include "VescIo.h"
+#include "VESC.h"
+#include "VescUart.h"
 #include "datatypes.h"
 
 VescUart Vesc(&Serial);

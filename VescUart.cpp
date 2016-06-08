@@ -24,7 +24,7 @@ along with this program.If not, see <http://www.gnu.org/licenses/>.
 
 VescUart::VescUart(HardwareSerial *usedSerial)
 {
-	SetUartSerial(&usedSerial);
+	SetUartSerial(usedSerial);
 }
 
 
