@@ -14,6 +14,7 @@
 
 
 #define DEBUG
+unsigned long count;
 
 void setup() {
 	
@@ -36,10 +37,10 @@ void loop() {
 	//	len = PackSendPayload(message, len);
 	//	len = 0;
 	//}
-
+	
 	if (VescUartGetValue(measuredValues)) {
+		Serial.print("Loop: "); Serial.println(count++);
 		SerialPrint(measuredValues);
-		
 	}
 	else
 	{
