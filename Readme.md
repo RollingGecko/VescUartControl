@@ -13,7 +13,6 @@ buffer
 
 are directly forked from https://github.com/vedderb/bldc
 
-datatypes.h was adapted.
 
 All available UART handlers the VESC can deal with can be found in the file commands.c (https://github.com/vedderb/bldc.)
 in the function commands_process_packet. You can write easily own handler functions. Use converting functions in 
@@ -23,7 +22,7 @@ The rest shut be comment sufficient in the VescUart.h. Take also a look to the R
 
 ##Requirements to use this library on bldc FW
 
-The needed canges where already merged by Vedder to the FW. :)
+The needed changes where already merged by Vedder to the FW. :)
 
 In bldc-tool please activate UART and if needed the nunchuk application. 
 
