@@ -20,14 +20,28 @@ along with this program.If not, see <http://www.gnu.org/licenses/>.
 #include "crc.h"
 #include "buffer.h"
 
-boolean Vesc::GetTelemetryValues(void)
+boolean Vesc::sendRequestGetTelemetryValues(void)
 {
 	uint8_t payload[1];
 	payload[0] = COMM_GET_VALUES;
-	PackSendPayload(payload, 1);
+	boolean sendResult = PackSendPayload(payload, 1);
+	if (sendResult)
+	{
+		memRunningRequests.waitForReceiveGetTelemetryValues = true;
+	}
+
+	return sendResult;
 }
 
-void Vesc::SetCurrent(float current)
+boolean Vesc::statusRequestGetTelemetryValues(void) {
+	
+	return memRunningRequests.waitForReceiveGetTelemetryValues;
+
+}
+
+
+
+void Vesc::sendSetCurrent(float current)
 {
 	int32_t index = 0;
 	uint8_t payload[5];
@@ -37,7 +51,7 @@ void Vesc::SetCurrent(float current)
 	PackSendPayload(payload, 5);
 }
 
-void Vesc::SetCurrentBrake(float brakeCurrent)
+void Vesc::sendSetCurrentBrake(float brakeCurrent)
 {
 	int32_t index = 0;
 	uint8_t payload[5];
@@ -47,7 +61,7 @@ void Vesc::SetCurrentBrake(float brakeCurrent)
 	PackSendPayload(payload, 5);
 }
 
-void Vesc::SetNunchukValues(remotePackage & data)
+boolean Vesc::SetNunchukValues(remotePackage& data)
 {
 		int32_t ind = 0;
 		uint8_t payload[5];
@@ -57,7 +71,7 @@ void Vesc::SetNunchukValues(remotePackage & data)
 		buffer_append_bool(payload, data.valLowerButton, &ind);
 		buffer_append_bool(payload, data.valUpperButton, &ind);
 
-		PackSendPayload(payload, 5);
+		return PackSendPayload(payload, 5);
 }
 
 int Vesc :: PackPayload(uint8_t * payload, int lenPay, uint8_t * messageSend)
@@ -87,11 +101,11 @@ int Vesc :: PackPayload(uint8_t * payload, int lenPay, uint8_t * messageSend)
 	return count;
 }
 
-void inline  Vesc::PackSendPayload(uint8_t * payloadToSend, int lengthPayload)
+boolean inline  Vesc::PackSendPayload(uint8_t * payloadToSend, int lengthPayload)
 {
 	uint8_t messageToSend[256];
-	int lengMessageToSend = PackPayload(payloadToSend, 1, messageToSend);
-	IOInterface->sendMessage(messageToSend, lengMessageToSend);
+	int lengMessageToSend = PackPayload(payloadToSend, lengthPayload, messageToSend);
+	return IOInterface->sendMessage(messageToSend, lengMessageToSend);
 }
 
 COMM_PACKET_ID Vesc::ReceiveHandleMessage()
@@ -185,6 +199,9 @@ COMM_PACKET_ID Vesc::HandlePayload(uint8_t* payload, int len)
 		ind += 8; //Skip 9 bit
 		telemetryDataFromVesc.tachometer = buffer_get_int32(payload, &ind);
 		telemetryDataFromVesc.tachometerAbs = buffer_get_int32(payload, &ind);
+
+		memRunningRequests.waitForReceiveGetTelemetryValues = false;
+		
 		return packetId;
 		break;
 

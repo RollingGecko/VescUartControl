@@ -33,14 +33,7 @@ class Vesc {
 	
 	//Data declaration 
 
-	//Define remote Package
-	struct remotePackage {
-
-		int		valXJoy;
-		int		valYJoy;
-		boolean	valUpperButton;
-		boolean	valLowerButton;
-	};
+	
 
 	//store measured values
 	struct typeTelemetryData {
@@ -56,6 +49,10 @@ class Vesc {
 		long tachometer;
 		long tachometerAbs;
 	};
+	struct runningRequests 
+	{
+		boolean waitForReceiveGetTelemetryValues = false;
+	} memRunningRequests;
 
 public:
 	Vesc(VescIo* Interface) { //declare corresponding IO-Interface to VESC when initializing instance
@@ -64,11 +61,22 @@ public:
 
 	~Vesc() {};
 
+	//Define remote Package
+	struct remotePackage {
+
+		int		valXJoy;
+		int		valYJoy;
+		boolean	valUpperButton;
+		boolean	valLowerButton;
+	};
+
 	//Methods to get or set data from/to VESC
-	boolean GetTelemetryValues(void);
-	void SetCurrent(float current);
-	void SetCurrentBrake(float brakeCurrent);
-	void SetNunchukValues(remotePackage& data);
+	boolean sendRequestGetTelemetryValues(void);
+	void sendSetCurrent(float current);
+	void sendSetCurrentBrake(float brakeCurrent);
+	boolean SetNunchukValues(remotePackage& data);
+
+	boolean statusRequestGetTelemetryValues(void);
 
 	COMM_PACKET_ID ReceiveHandleMessage(); //get and handle messages from VESC
 
@@ -82,7 +90,7 @@ public:
 
 private:
 
-	void inline  PackSendPayload(uint8_t* payloadToSend, int lengthPayload);
+	boolean inline  PackSendPayload(uint8_t* payloadToSend, int lengthPayload);
 	//uses:
 	
 
@@ -92,6 +100,7 @@ private:
 	int UnpackPayload(uint8_t* message, int lenMes, uint8_t* payload, int lenPa);
 
 	COMM_PACKET_ID HandlePayload(uint8_t* payload, int len);
+
 };
 
 
