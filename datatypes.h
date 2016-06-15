@@ -27,7 +27,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-#include "ch.h"
+//#include "ch.h"
 
 // Data types
 typedef enum {
@@ -414,8 +414,6 @@ typedef enum {
 	COMM_GET_DECODED_ADC,
 	COMM_GET_DECODED_CHUK,
 	COMM_FORWARD_CAN,
-	COMM_SET_CHUCK_DATA
-	COMM_FORWARD_CAN,
 	COMM_SET_CHUCK_DATA,
 	COMM_CUSTOM_APP_DATA,
 	COMM_NON
@@ -474,13 +472,13 @@ typedef struct {
 	bool bt_z;
 } chuck_data;
 
-typedef struct {
-	int id;
-	systime_t rx_time;
-	float rpm;
-	float current;
-	float duty;
-} can_status_msg;
+//typedef struct {
+//	int id;
+//	systime_t rx_time;
+//	float rpm;
+//	float current;
+//	float duty;
+//} can_status_msg;
 
 typedef struct {
 	uint8_t js_x;
