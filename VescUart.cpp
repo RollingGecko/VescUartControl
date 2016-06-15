@@ -221,12 +221,19 @@ void VescUartSetCurrentBrake(float brakeCurrent) {
 
 void VescUartSetNunchukValues(remotePackage& data) {
 	int32_t ind = 0;
-	uint8_t payload[5];
+	uint8_t payload[11];
 	payload[ind++] = COMM_SET_CHUCK_DATA;
 	payload[ind++] = data.valXJoy;
 	payload[ind++] = data.valYJoy;
 	buffer_append_bool(payload, data.valLowerButton, &ind);
 	buffer_append_bool(payload, data.valUpperButton, &ind);
+	//Acceleration Data. Not used, Int16 (2 byte)
+	payload[ind++] = 0;
+	payload[ind++] = 0;
+	payload[ind++] = 0;
+	payload[ind++] = 0;
+	payload[ind++] = 0;
+	payload[ind++] = 0;
 
 #ifdef DEBUG
 	DEBUGSERIAL.println("Data reached at VescUartSetNunchuckValues:");
@@ -234,7 +241,7 @@ void VescUartSetNunchukValues(remotePackage& data) {
 	DEBUGSERIAL.print("LowerButton = "); DEBUGSERIAL.print(data.valLowerButton); DEBUGSERIAL.print(" UpperButton = "); DEBUGSERIAL.println(data.valUpperButton);
 #endif
 
-	PackSendPayload(payload, 5);
+	PackSendPayload(payload, 11);
 }
 
 void SerialPrint(uint8_t* data, int len) {
