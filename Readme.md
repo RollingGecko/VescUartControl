@@ -14,7 +14,7 @@ buffer
 are directly forked from https://github.com/vedderb/bldc
 
 
-All available UART handlers the VESC can deal with can be found in the file commands.c (https://github.com/vedderb/bldc.)
+All available UART handlers the VESC can deal with can be found in the file commands.c (https://github.com/vedderb/bldc)
 in the function commands_process_packet. You can write easily own handler functions. Use converting functions in 
 the library buffer.c.
 
