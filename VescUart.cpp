@@ -190,8 +190,8 @@ bool VescUartGetValue(bldcMeasure& values) {
 	PackSendPayload(command, 1);
 	delay(100); //needed, otherwise data is not read
 	int lenPayload = ReceiveUartMessage(payload);
-	if (lenPayload > 0) {
-		bool read = ProcessReadPacket(payload, values, lenPayload); //returns true if sucessfull
+	if (lenPayload > 55) {
+		bool read = ProcessReadPacket(payload, values, lenPayload); //returns true if sucessful
 		return read;
 	}
 	else
