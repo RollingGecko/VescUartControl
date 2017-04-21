@@ -21,7 +21,7 @@ along with this program.If not, see <http://www.gnu.org/licenses/>.
 
 //#include "Config.h" 
 
-/*TThis library was created on an Adruinio 2560 with different serial ports to have a better possibility
+/*This library was created on an Arduino 2560 with different serial ports to have a better possibility
 to debug. The serial ports are define with #define:
 #define SERIALIO Serial1  		for the UART port to VESC
 #define DEBUGSERIAL Serial		for debuging over USB
@@ -30,16 +30,19 @@ If you want to use debug, uncomment DEBUGSERIAL and define a port.*/
 
 #ifndef _CONFIG_h
 
-#ifdef __AVR_ATmega2560__ 
-#define SERIALIO Serial1  
+#ifdef __AVR_ATmega2560__
+#define SERIALIO Serial1
 #define DEBUGSERIAL Serial
-#endif
 
-#ifdef ARDUINO_AVR_NANO
-#define SERIALIO Serial  
+#elif ARDUINO_AVR_NANO
+#define SERIALIO Serial
+#define DEBUGSERIAL Serial
+
+#else
+#define SERIALIO Serial
 #define DEBUGSERIAL Serial
 #endif
-#endif
+#endif // _CONFIG_h
 
 #if defined(ARDUINO) && ARDUINO >= 100
 #include "Arduino.h"
