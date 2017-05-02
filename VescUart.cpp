@@ -21,7 +21,6 @@ along with this program.If not, see <http://www.gnu.org/licenses/>.
 
 bool UnpackPayload(uint8_t* message, int lenMes, uint8_t* payload, int lenPa);
 bool ProcessReadPacket(uint8_t* message, bldcMeasure& values, int len);
-bool ProcessReadPacket2(uint8_t* message, posMeasure& values2, int len);
 
 //HardwareSerial *serial;
 int ReceiveUartMessage(uint8_t* payloadReceived, int num) {
@@ -214,28 +213,6 @@ bool ProcessReadPacket(uint8_t* message, bldcMeasure& values, int len) {
 		break;
 	}
 
-}
-
-bool ProcessReadPacket2(uint8_t* message, posMeasure& values2, int len) {
-	COMM_PACKET_ID packetId;
-	int32_t ind = 0;
-
-	packetId = (COMM_PACKET_ID)message[0];
-	message++;//Eliminates the message id
-	len--;
-
-	switch (packetId)
-	{
-	case COMM_GET_DECODED_PPM:
-		ind = 0;
-		values2.get_servo = buffer_get_int32(message, &ind);
-		values2.get_pulse = buffer_get_int32(message, &ind);
-		return true;
-		break;
-	default:
-		return false;
-		break;
-	}
 }
 
 bool VescUartGetValue(bldcMeasure& values, int num) {
