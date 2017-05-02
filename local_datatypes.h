@@ -15,6 +15,13 @@ struct bldcMeasure {
 	long tachometer;
 	long tachometerAbs;
 };
+struct posMeasure {
+	//7 Values int16_t not read(14 byte)
+	long get_servo;
+	long get_pulse;
+
+
+};
 
 //Define remote Package
 
