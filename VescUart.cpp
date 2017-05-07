@@ -22,7 +22,7 @@ along with this program.If not, see <http://www.gnu.org/licenses/>.
 bool UnpackPayload(uint8_t* message, int lenMes, uint8_t* payload, int lenPa);
 bool ProcessReadPacket(uint8_t* message, bldcMeasure& values, int len);
 
-//HardwareSerial *serial;
+//HardwareSerial *serial; ///@param num as integer with the serial port in use (0=Serial; 1=Serial1; 2=Serial2; 3=Serial3;)
 int ReceiveUartMessage(uint8_t* payloadReceived, int num) {
 
 	//Messages <= 255 start with 2. 2nd byte is length
@@ -36,6 +36,9 @@ int ReceiveUartMessage(uint8_t* payloadReceived, int num) {
 
 	HardwareSerial *serial;
 	switch (num) {
+		case 0:
+			serial=&Serial;
+			break;
 		case 1:
 			serial=&Serial1;
 			break;
@@ -163,6 +166,9 @@ int PackSendPayload(uint8_t* payload, int lenPay, int num) {
 
 	HardwareSerial *serial;
 	switch (num) {
+		case 0:
+			serial=&Serial;
+			break;
 		case 1:
 			serial=&Serial1;
 			break;
@@ -230,6 +236,11 @@ bool VescUartGetValue(bldcMeasure& values, int num) {
 		return false;
 	}
 }
+bool VescUartGetValue(bldcMeasure& values) {
+	bool VescUartGetValue(bldcMeasure& values, 0);
+}
+
+
 bool VescUartGetPPM(posMeasure& values2, int num) {
 	uint8_t command[1] = { COMM_GET_DECODED_PPM };
 	uint8_t payload[256];
@@ -245,6 +256,9 @@ bool VescUartGetPPM(posMeasure& values2, int num) {
 		return false;
 	}
 }
+bool VescUartGetPPM(posMeasure& values2) {
+	bool VescUartGetPPM(posMeasure& values2, 0) ;
+}
 
 void VescUartSetCurrent(float current, int num) {
 	int32_t index = 0;
@@ -254,6 +268,10 @@ void VescUartSetCurrent(float current, int num) {
 	buffer_append_int32(payload, (int32_t)(current * 1000), &index);
 	PackSendPayload(payload, 5, num);
 }
+void VescUartSetCurrent(float current){
+	void VescUartSetCurrent(float current, 0);
+}
+
 void VescUartSetPosition(float position, int num) {
 	int32_t index = 0;
 	uint8_t payload[5];
@@ -262,6 +280,10 @@ void VescUartSetPosition(float position, int num) {
 	buffer_append_int32(payload, (int32_t)(position * 1000000.0), &index);
 	PackSendPayload(payload, 5, num);
 }
+void VescUartSetPosition(float position) {
+	void VescUartSetPosition(float position, 0);
+}
+
 void VescUartSetDuty(float duty, int num) {
 	int32_t index = 0;
 	uint8_t payload[5];
@@ -270,6 +292,10 @@ void VescUartSetDuty(float duty, int num) {
 	buffer_append_int32(payload, (int32_t)(duty * 100000), &index);
 	PackSendPayload(payload, 5, num);
 }
+void VescUartSetDuty(float duty) {
+	void VescUartSetDuty(float duty, 0);
+}
+
 
 void VescUartSetRPM(float rpm, int num) {
 	int32_t index = 0;
@@ -279,6 +305,9 @@ void VescUartSetRPM(float rpm, int num) {
 	buffer_append_int32(payload, (int32_t)(rpm), &index);
 	PackSendPayload(payload, 5, num);
 }
+void VescUartSetRPM(float rpm) {
+	void VescUartSetRPM(float rpm, 0);
+}
 
 void VescUartSetCurrentBrake(float brakeCurrent, int num) {
 	int32_t index = 0;
@@ -287,8 +316,11 @@ void VescUartSetCurrentBrake(float brakeCurrent, int num) {
 	payload[index++] = COMM_SET_CURRENT_BRAKE;
 	buffer_append_int32(payload, (int32_t)(brakeCurrent * 1000), &index);
 	PackSendPayload(payload, 5, num);
-
 }
+void VescUartSetCurrentBrake(float brakeCurrent) {
+	void VescUartSetCurrentBrake(float brakeCurrent, 0);
+}
+
 
 void VescUartSetNunchukValues(remotePackage& data, int num) {
 	int32_t ind = 0;
@@ -313,6 +345,9 @@ void VescUartSetNunchukValues(remotePackage& data, int num) {
 #endif
 
 	PackSendPayload(payload, 11, num);
+}
+void VescUartSetNunchukValues(remotePackage& data) {
+	void VescUartSetNunchukValues(remotePackage& data, 0);
 }
 
 void SerialPrint(uint8_t* data, int len) {

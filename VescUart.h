@@ -80,27 +80,46 @@ void SerialPrint(uint8_t* data, int len);
 ///@param bldcMeasure struct with received data
 //@return true if sucess
 bool VescUartGetValue(struct bldcMeasure& values, int num);
+bool VescUartGetValue(bldcMeasure& values);
 
 ///Sends a command to VESC to control the motor current
 ///@param current as float with the current for the motor
+///@param num as integer with the serial port in use (0=Serial; 1=Serial1; 2=Serial2; 3=Serial3;)
 
 void VescUartSetCurrent(float current, int num);
+void VescUartSetCurrent(float current);
 
 ///Sends a command to VESC to control the motor brake
 ///@param breakCurrent as float with the current for the brake
+///@param num as integer with the serial port in use (0=Serial; 1=Serial1; 2=Serial2; 3=Serial3;)
 
 void VescUartSetCurrentBrake(float brakeCurrent, int num);
+void VescUartSetCurrentBrake(float brakeCurrent);
 
 ///Sends values of a joystick and 2 buttons to VESC to control the nunchuk app
 
 void VescUartSetNunchukValues(remotePackage& data, int num);
+void VescUartSetNunchukValues(remotePackage& data);
 
 ///Sends a command to VESC to control the motor position
-///@param current as float with the current for the motor
-void VescUartSetPosition(float position, int num) ;
-void VescUartSetDuty(float duty, int num) ;
-void VescUartSetRPM(float rpm, int num);
+///@param position as float with the position in degrees for the motor
+///@param num as integer with the serial port in use (0=Serial; 1=Serial1; 2=Serial2; 3=Serial3;)
 
-bool VescUartGetPPM(posMeasure& values2, int num);
+void VescUartSetPosition(float position, int num) ;
+void VescUartSetPosition(float position) ;
+
+///Sends a command to VESC to control the motor duty cycle
+///@param duty as float with the duty cycle for the motor
+///@param num as integer with the serial port in use (0=Serial; 1=Serial1; 2=Serial2; 3=Serial3;)
+
+void VescUartSetDuty(float duty, int num) ;
+void VescUartSetDuty(float duty) ;
+
+///Sends a command to VESC to control the motor rotational speed
+///@param rpm as float with the revolutions per second for the motor
+///@param num as integer with the serial port in use (0=Serial; 1=Serial1; 2=Serial2; 3=Serial3;)
+
+void VescUartSetRPM(float rpm, int num);
+void VescUartSetRPM(float rpm);
 
 #endif
