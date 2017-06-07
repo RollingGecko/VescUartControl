@@ -42,7 +42,7 @@ If you want to use debug, uncomment DEBUGSERIAL and define a port.*/
 #endif
 
 #if defined(ARDUINO) && ARDUINO >= 100
-#include "arduino.h"
+#include "Arduino.h"
 #else
 #include "WProgram.h"
 #endif
@@ -82,6 +82,10 @@ bool VescUartGetValue(struct bldcMeasure& values);
 ///@param current as float with the current for the motor
 
 void VescUartSetCurrent(float current);
+
+///Sends a command to VESC to control the motor RPM
+///@param rpm as float ; revolutions per minute (units???) for the motor
+void VescUartSetRPM(float rpm);
 
 ///Sends a command to VESC to control the motor brake
 ///@param breakCurrent as float with the current for the brake

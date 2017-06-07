@@ -209,6 +209,18 @@ void VescUartSetCurrent(float current) {
 	PackSendPayload(payload, 5);
 }
 
+
+void VescUartSetRPM(float rpm) {
+	int32_t index = 0;
+	uint8_t payload[5];
+
+	payload[index++] = COMM_SET_RPM ;
+	buffer_append_int32(payload, (int32_t)(rpm * 1000), &index);
+	PackSendPayload(payload, 5);
+}
+
+
+
 void VescUartSetCurrentBrake(float brakeCurrent) {
 	int32_t index = 0;
 	uint8_t payload[5];
