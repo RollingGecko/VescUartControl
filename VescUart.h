@@ -78,7 +78,7 @@ void SerialPrint(uint8_t* data, int len);
 
 ///Sends a command to VESC and stores the returned data
 ///@param bldcMeasure struct with received data
-//@return true if sucess
+//@return true if success
 bool VescUartGetValue(struct bldcMeasure& values, int num);
 bool VescUartGetValue(bldcMeasure& values);
 
