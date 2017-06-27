@@ -12,7 +12,7 @@ You should have received a copy of the GNU General Public License
 along with this program.If not, see <http://www.gnu.org/licenses/>.
 */
 
-//The Config.h is a file, that I use in other programs usualy. So I define also the serial ports there. If you don't want to
+//The Config.h is a file, that I use in other programs usually. So I define also the serial ports there. If you don't want to
 //use it, just comment the include statement in the VescUart.h out.
 
 #ifndef _CONFIG_h
@@ -20,5 +20,9 @@ along with this program.If not, see <http://www.gnu.org/licenses/>.
 
   #define SERIALIO Serial1  
   #define DEBUGSERIAL Serial
+
+//Toggle in, when you have multiple SErial Ports with multiple VESCs attached. In this implementation you can can use 1 Serial port or 4 Serial ports 
+//(Serial0-3)(Mega2560). When toggled out, you use the HardwareSerial Port Serial.
+#define MULTI_SERIAL
 
 #endif
