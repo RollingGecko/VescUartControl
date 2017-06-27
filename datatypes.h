@@ -499,26 +499,25 @@ typedef enum {
 	MOTE_PACKET_PROCESS_SHORT_BUFFER,
 } MOTE_PACKET;
 
-typedef struct {
-	float v_in;
-	float temp_mos1;
-	float temp_mos2;
-	float temp_mos3;
-	float temp_mos4;
-    float temp_mos5;
-    float temp_mos6;
-    float temp_pcb;
-    float current_motor;
-    float current_in;
-    float rpm;
+struct mc_values{
+	
+	float temp_fet_filtered;
+    float temp_motor_filtered;
+	float avg_motor_current;
+	float avg_input_current;
+	float avg_id;
+	float avg_iq;
     float duty_now;
+	float rpm;
+	float input_voltage;
     float amp_hours;
     float amp_hours_charged;
     float watt_hours;
     float watt_hours_charged;
     int tachometer;
     int tachometer_abs;
-    mc_fault_code fault_code;
-} mc_values;
+	int fault_code;
+	//mc_fault_code fault_code;
+} ;
 
 #endif /* DATATYPES_H_ */

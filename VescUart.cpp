@@ -20,7 +20,7 @@ along with this program.If not, see <http://www.gnu.org/licenses/>.
 #include "crc.h"
 
 bool UnpackPayload(uint8_t* message, int lenMes, uint8_t* payload, int lenPa);
-bool ProcessReadPacket(uint8_t* message, bldcMeasure& values, int len);
+bool ProcessReadPacket(uint8_t* message, struct mc_values& values, int len);
 
 int ReceiveUartMessage(uint8_t* payloadReceived) {
 
@@ -152,7 +152,7 @@ int PackSendPayload(uint8_t* payload, int lenPay) {
 }
 
 
-bool ProcessReadPacket(uint8_t* message, bldcMeasure& values, int len) {
+bool ProcessReadPacket(uint8_t* message, struct mc_values& values, int len) {
 	COMM_PACKET_ID packetId;
 	int32_t ind = 0;
 
@@ -162,18 +162,24 @@ bool ProcessReadPacket(uint8_t* message, bldcMeasure& values, int len) {
 
 	switch (packetId)
 	{
+
 	case COMM_GET_VALUES:
-		ind = 14; //Skipped the first 14 bit.
-		values.avgMotorCurrent = buffer_get_float32(message, 100.0, &ind);
-		values.avgInputCurrent = buffer_get_float32(message, 100.0, &ind);
-		values.dutyCycleNow = buffer_get_float16(message, 1000.0, &ind);
-		values.rpm = buffer_get_int32(message, &ind);
-		values.inpVoltage = buffer_get_float16(message, 10.0, &ind);
-		values.ampHours = buffer_get_float32(message, 10000.0, &ind);
-		values.ampHoursCharged = buffer_get_float32(message, 10000.0, &ind);
-		ind += 8; //Skip 9 bit
-		values.tachometer = buffer_get_int32(message, &ind);
-		values.tachometerAbs = buffer_get_int32(message, &ind);
+		values.temp_fet_filtered	= buffer_get_float16(message, 1e1, &ind);
+		values.temp_motor_filtered	= buffer_get_float16(message, 1e1, &ind);
+		values.avg_motor_current	= buffer_get_float32(message, 100.0, &ind);
+		values.avg_input_current	= buffer_get_float32(message, 100.0, &ind);
+		values.avg_id				= buffer_get_float32(message, 1e2, &ind);
+		values.avg_iq				= buffer_get_float32(message, 1e2, &ind);
+		values.duty_now				= buffer_get_float16(message, 1000.0, &ind);
+		values.rpm					= buffer_get_float32(message, 1.0, &ind);
+		values.input_voltage		= buffer_get_float16(message, 10.0, &ind);
+		values.amp_hours			= buffer_get_float32(message, 10000.0, &ind);
+		values.amp_hours_charged	= buffer_get_float32(message, 10000.0, &ind);
+		values.watt_hours			= buffer_get_float32(message, 1e4, &ind);
+		values.watt_hours_charged	= buffer_get_float32(message, 1e4, &ind);
+		values.tachometer			= buffer_get_int32(message, &ind);
+		values.tachometer_abs		= buffer_get_int32(message, &ind);
+		values.fault_code			= message[ind];
 		return true;
 		break;
 
@@ -184,7 +190,7 @@ bool ProcessReadPacket(uint8_t* message, bldcMeasure& values, int len) {
 
 }
 
-bool VescUartGetValue(bldcMeasure& values) {
+bool VescUartGetValue(struct mc_values& values) {
 	uint8_t command[1] = { COMM_GET_VALUES };
 	uint8_t payload[256];
 	PackSendPayload(command, 1);
@@ -257,15 +263,22 @@ void SerialPrint(uint8_t* data, int len) {
 }
 
 
-void SerialPrint(const bldcMeasure& values) {
-	DEBUGSERIAL.print("avgMotorCurrent: "); DEBUGSERIAL.println(values.avgMotorCurrent);
-	DEBUGSERIAL.print("avgInputCurrent: "); DEBUGSERIAL.println(values.avgInputCurrent);
-	DEBUGSERIAL.print("dutyCycleNow: "); DEBUGSERIAL.println(values.dutyCycleNow);
-	DEBUGSERIAL.print("rpm: "); DEBUGSERIAL.println(values.rpm);
-	DEBUGSERIAL.print("inputVoltage: "); DEBUGSERIAL.println(values.inpVoltage);
-	DEBUGSERIAL.print("ampHours: "); DEBUGSERIAL.println(values.ampHours);
-	DEBUGSERIAL.print("ampHoursCharges: "); DEBUGSERIAL.println(values.ampHoursCharged);
-	DEBUGSERIAL.print("tachometer: "); DEBUGSERIAL.println(values.tachometer);
-	DEBUGSERIAL.print("tachometerAbs: "); DEBUGSERIAL.println(values.tachometerAbs);
+void SerialPrint(const struct mc_values& values) {
+	DEBUGSERIAL.print("temp_fet_filtered:	"); DEBUGSERIAL.println(values.temp_fet_filtered);
+	DEBUGSERIAL.print("temp_motor_filtered:	"); DEBUGSERIAL.println(values.temp_motor_filtered);
+	DEBUGSERIAL.print("avg_motor_current:	"); DEBUGSERIAL.println(values.avg_motor_current);
+	DEBUGSERIAL.print("avg_input_current:	"); DEBUGSERIAL.println(values.input_voltage);
+	DEBUGSERIAL.print("avg_id:				"); DEBUGSERIAL.println(values.avg_id);
+	DEBUGSERIAL.print("avg_iq:				"); DEBUGSERIAL.println(values.avg_iq);
+	DEBUGSERIAL.print("duty_now:			"); DEBUGSERIAL.println(values.duty_now);
+	DEBUGSERIAL.print("rpm:					"); DEBUGSERIAL.println(values.rpm);
+	DEBUGSERIAL.print("input_voltage:		"); DEBUGSERIAL.println(values.input_voltage);
+	DEBUGSERIAL.print("amp_hours:			"); DEBUGSERIAL.println(values.amp_hours);
+	DEBUGSERIAL.print("amp_hours_charged:	"); DEBUGSERIAL.println(values.amp_hours_charged);
+	DEBUGSERIAL.print("tachometer:			"); DEBUGSERIAL.println(values.tachometer);
+	DEBUGSERIAL.print("tachometer_abs:		"); DEBUGSERIAL.println(values.tachometer_abs);
+	DEBUGSERIAL.print("fault_code:			"); DEBUGSERIAL.println(values.fault_code);
+
+	
 }
 

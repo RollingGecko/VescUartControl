@@ -22,7 +22,7 @@ along with this program.If not, see <http://www.gnu.org/licenses/>.
 //#include "Config.h" 
 
 /*TThis library was created on an Adruinio 2560 with different serial ports to have a better possibility
-to debug. The serial ports are define with #define:
+to debug. The serial ports are defined with #define:
 #define SERIALIO Serial1  		for the UART port to VESC
 #define DEBUGSERIAL Serial		for debuging over USB
 So you need here to define the right serial port for your arduino.
@@ -63,10 +63,10 @@ int PackSendPayload(uint8_t* payload, int lenPay);
 
 int ReceiveUartMessage(uint8_t* payloadReceived);
 
-///Help Function to print struct bldcMeasure over Serial for Debug
+///Help Function to print struct mc_values over Serial for Debug
 ///Define in a Config.h the DEBUGSERIAL you want to use
 
-void SerialPrint(const struct bldcMeasure& values);
+void SerialPrint(const struct mc_values& values);
 
 ///Help Function to print uint8_t array over Serial for Debug
 ///Define in a Config.h the DEBUGSERIAL you want to use
@@ -74,9 +74,9 @@ void SerialPrint(const struct bldcMeasure& values);
 void SerialPrint(uint8_t* data, int len);
 
 ///Sends a command to VESC and stores the returned data
-///@param bldcMeasure struct with received data
+///@param mc_values struct with received data
 //@return true if sucess
-bool VescUartGetValue(struct bldcMeasure& values);
+bool VescUartGetValue(struct mc_values& values);
 
 ///Sends a command to VESC to control the motor current
 ///@param current as float with the current for the motor

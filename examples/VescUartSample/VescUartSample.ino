@@ -9,7 +9,8 @@
 // #include Config.h out in VescUart.h
 
 //Include libraries copied from VESC
- #include "VescUart.h"
+
+#include "VescUart.h"
 #include "datatypes.h"
 
 
@@ -26,7 +27,7 @@ void setup() {
 	#endif
 }
 
-struct bldcMeasure measuredValues;
+struct mc_values measuredVal;
 	
 // the loop function runs over and over again until power down or reset
 void loop() {
@@ -38,9 +39,9 @@ void loop() {
 	//	len = 0;
 	//}
 	
-	if (VescUartGetValue(measuredValues)) {
+	if (VescUartGetValue(measuredVal)) {
 		Serial.print("Loop: "); Serial.println(count++);
-		SerialPrint(measuredValues);
+		SerialPrint(measuredVal);
 	}
 	else
 	{
