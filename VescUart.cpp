@@ -19,8 +19,33 @@ along with this program.If not, see <http://www.gnu.org/licenses/>.
 #include "buffer.h"
 #include "crc.h"
 
+static HardwareSerial* serialPort1;
+static HardwareSerial* serialPort2;
+static HardwareSerial* serialPort3;
+static HardwareSerial* serialPort4;
+static HardwareSerial* debugSerialPort = NULL;
+
 bool UnpackPayload(uint8_t* message, int lenMes, uint8_t* payload, int lenPa);
 bool ProcessReadPacket(uint8_t* message, bldcMeasure& values, int len);
+
+void SetSerialPort(HardwareSerial*  _serialPort1, HardwareSerial*  _serialPort2, HardwareSerial*  _serialPort3, HardwareSerial*  _serialPort4)
+{
+	serialPort1 = _serialPort1;
+	serialPort2 = _serialPort2;
+	serialPort3 = _serialPort3;
+	serialPort4 = _serialPort4;
+}
+
+void SetSerialPort(HardwareSerial* _serialPort)
+{
+	SetSerialPort(_serialPort, _serialPort, _serialPort, _serialPort);
+}
+
+void SetDebugSerialPort(HardwareSerial * _debugSerialPort)
+{
+	debugSerialPort = _debugSerialPort;
+}
+
 
 //HardwareSerial *serial; ///@param num as integer with the serial port in use (0=Serial; 1=Serial1; 2=Serial2; 3=Serial3;)
 int ReceiveUartMessage(uint8_t* payloadReceived, int num) {
@@ -33,26 +58,27 @@ int ReceiveUartMessage(uint8_t* payloadReceived, int num) {
 	bool messageRead = false;
 	uint8_t messageReceived[256];
 	int lenPayload = 0;
-	HardwareSerial *serial;
-	serial=&Serial;
-	#ifdef __AVR_ATmega2560__
+	HardwareSerial* serial;
+	
+
 	switch (num) {
 		case 0:
-			serial=&Serial;
+			serial = serialPort1;
 			break;
 		case 1:
-			serial=&Serial1;
+			serial = serialPort2;
 			break;
 		case 2:
-			serial=&Serial2;
+			serial = serialPort3;
 			break;
 		case 3:
-			serial=&Serial3;
+			serial = serialPort4;
 			break;
 		default:
 			break;
+
 	}
-	#endif
+
 	while (serial->available()) {
 
 		messageReceived[counter++] = serial->read();
@@ -80,9 +106,9 @@ int ReceiveUartMessage(uint8_t* payloadReceived, int num) {
 
 		if (counter == endMessage && messageReceived[endMessage - 1] == 3) {//+1: Because of counter++ state of 'counter' with last read = "endMessage"
 			messageReceived[endMessage] = 0;
-#ifdef DEBUG
-			DEBUGSERIAL.println("End of message reached!");
-#endif
+			if (debugSerialPort != NULL) {
+				debugSerialPort->println("End of message reached!");
+			}
 			messageRead = true;
 			break; //Exit if end of message is reached, even if there is still more data in buffer.
 		}
@@ -108,23 +134,23 @@ bool UnpackPayload(uint8_t* message, int lenMes, uint8_t* payload, int lenPay) {
 	crcMessage = message[lenMes - 3] << 8;
 	crcMessage &= 0xFF00;
 	crcMessage += message[lenMes - 2];
-#ifdef DEBUG
-	DEBUGSERIAL.print("SRC received: "); DEBUGSERIAL.println(crcMessage);
-#endif // DEBUG
+if(debugSerialPort!=NULL){
+	debugSerialPort->print("SRC received: "); debugSerialPort->println(crcMessage);
+} // DEBUG
 
 	//Extract payload:
 	memcpy(payload, &message[2], message[1]);
 
 	crcPayload = crc16(payload, message[1]);
-#ifdef DEBUG
-	DEBUGSERIAL.print("SRC calc: "); DEBUGSERIAL.println(crcPayload);
-#endif
+if(debugSerialPort!=NULL){
+	debugSerialPort->print("SRC calc: "); debugSerialPort->println(crcPayload);
+}
 	if (crcPayload == crcMessage)
 	{
-#ifdef DEBUG
-		DEBUGSERIAL.print("Received: "); SerialPrint(message, lenMes); DEBUGSERIAL.println();
-		DEBUGSERIAL.print("Payload :      "); SerialPrint(payload, message[1] - 1); DEBUGSERIAL.println();
-#endif // DEBUG
+if(debugSerialPort!=NULL){
+		debugSerialPort->print("Received: "); SerialPrint(message, lenMes); debugSerialPort->println();
+		debugSerialPort->print("Payload :      "); SerialPrint(payload, message[1] - 1); debugSerialPort->println();
+} // DEBUG
 
 		return true;
 	}
@@ -133,6 +159,9 @@ bool UnpackPayload(uint8_t* message, int lenMes, uint8_t* payload, int lenPay) {
 		return false;
 	}
 }
+
+
+
 
 int PackSendPayload(uint8_t* payload, int lenPay, int num) {
 	uint16_t crcPayload = crc16(payload, lenPay);
@@ -158,31 +187,31 @@ int PackSendPayload(uint8_t* payload, int lenPay, int num) {
 	messageSend[count++] = 3;
 	messageSend[count] = NULL;
 
-#ifdef DEBUG
-	DEBUGSERIAL.print("UART package send: "); SerialPrint(messageSend, count);
+if(debugSerialPort!=NULL){
+	debugSerialPort->print("UART package send: "); SerialPrint(messageSend, count);
 
-#endif // DEBUG
+} // DEBUG
 
 
 	HardwareSerial *serial;
-	#ifdef __AVR_ATmega2560__
+
 	switch (num) {
 		case 0:
-			serial=&Serial;
+			serial=serialPort1;
 			break;
 		case 1:
-			serial=&Serial1;
+			serial=serialPort2;
 			break;
 		case 2:
-			serial=&Serial2;
+			serial=serialPort3;
 			break;
 		case 3:
-			serial=&Serial3;
+			serial=serialPort4;
 			break;
 		default:
 			break;
 	}
-	#endif
+
 	//Sending package
 	serial->write(messageSend, count);
 
@@ -320,11 +349,11 @@ void VescUartSetNunchukValues(remotePackage& data, int num) {
 	payload[ind++] = 0;
 	payload[ind++] = 0;
 
-#ifdef DEBUG
-	DEBUGSERIAL.println("Data reached at VescUartSetNunchuckValues:");
-	DEBUGSERIAL.print("valXJoy = "); DEBUGSERIAL.print(data.valXJoy); DEBUGSERIAL.print(" valYJoy = "); DEBUGSERIAL.println(data.valYJoy);
-	DEBUGSERIAL.print("LowerButton = "); DEBUGSERIAL.print(data.valLowerButton); DEBUGSERIAL.print(" UpperButton = "); DEBUGSERIAL.println(data.valUpperButton);
-#endif
+if(debugSerialPort!=NULL){
+	debugSerialPort->println("Data reached at VescUartSetNunchuckValues:");
+	debugSerialPort->print("valXJoy = "); debugSerialPort->print(data.valXJoy); debugSerialPort->print(" valYJoy = "); debugSerialPort->println(data.valYJoy);
+	debugSerialPort->print("LowerButton = "); debugSerialPort->print(data.valLowerButton); debugSerialPort->print(" UpperButton = "); debugSerialPort->println(data.valUpperButton);
+}
 
 	PackSendPayload(payload, 11, num);
 }
@@ -332,27 +361,28 @@ void VescUartSetNunchukValues(remotePackage& data) {
 	VescUartSetNunchukValues(data, 0);
 }
 
+
 void SerialPrint(uint8_t* data, int len) {
 
-	//	DEBUGSERIAL.print("Data to display: "); DEBUGSERIAL.println(sizeof(data));
+	//	debugSerialPort->print("Data to display: "); debugSerialPort->println(sizeof(data));
 
 	for (int i = 0; i <= len; i++)
 	{
-		DEBUGSERIAL.print(data[i]);
-		DEBUGSERIAL.print(" ");
+		debugSerialPort->print(data[i]);
+		debugSerialPort->print(" ");
 	}
-	DEBUGSERIAL.println("");
+	debugSerialPort->println("");
 }
 
 
 void SerialPrint(const bldcMeasure& values) {
-	DEBUGSERIAL.print("avgMotorCurrent: "); DEBUGSERIAL.println(values.avgMotorCurrent);
-	DEBUGSERIAL.print("avgInputCurrent: "); DEBUGSERIAL.println(values.avgInputCurrent);
-	DEBUGSERIAL.print("dutyCycleNow: "); DEBUGSERIAL.println(values.dutyCycleNow);
-	DEBUGSERIAL.print("rpm: "); DEBUGSERIAL.println(values.rpm);
-	DEBUGSERIAL.print("inputVoltage: "); DEBUGSERIAL.println(values.inpVoltage);
-	DEBUGSERIAL.print("ampHours: "); DEBUGSERIAL.println(values.ampHours);
-	DEBUGSERIAL.print("ampHoursCharges: "); DEBUGSERIAL.println(values.ampHoursCharged);
-	DEBUGSERIAL.print("tachometer: "); DEBUGSERIAL.println(values.tachometer);
-	DEBUGSERIAL.print("tachometerAbs: "); DEBUGSERIAL.println(values.tachometerAbs);
+	debugSerialPort->print("avgMotorCurrent: "); debugSerialPort->println(values.avgMotorCurrent);
+	debugSerialPort->print("avgInputCurrent: "); debugSerialPort->println(values.avgInputCurrent);
+	debugSerialPort->print("dutyCycleNow: "); debugSerialPort->println(values.dutyCycleNow);
+	debugSerialPort->print("rpm: "); debugSerialPort->println(values.rpm);
+	debugSerialPort->print("inputVoltage: "); debugSerialPort->println(values.inpVoltage);
+	debugSerialPort->print("ampHours: "); debugSerialPort->println(values.ampHours);
+	debugSerialPort->print("ampHoursCharges: "); debugSerialPort->println(values.ampHoursCharged);
+	debugSerialPort->print("tachometer: "); debugSerialPort->println(values.tachometer);
+	debugSerialPort->print("tachometerAbs: "); debugSerialPort->println(values.tachometerAbs);
 }
