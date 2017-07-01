@@ -27,7 +27,7 @@ void setup() {
 	#endif
 }
 
-struct mc_values measuredVal;
+struct bldcMeasure measuredVal;
 	
 // the loop function runs over and over again until power down or reset
 void loop() {

@@ -1,0 +1,13 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+*.d
+*.o
+*.hex
+*.elf
+*.xml
+*.buildinfo
+*.a
+*.suo
+/examples/VescTestGetTelemetry/__vm/.VescTestGetTelemetry.vsarduino.h

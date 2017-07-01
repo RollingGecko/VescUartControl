@@ -1,0 +1,193 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{32e55351-b72a-4b93-956e-336e0ef9514f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\_micro-api-readonly">
+      <UniqueIdentifier>{26accd02-f68c-46d8-b341-a2b11e11b096}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\_micro-api-readonly\core">
+      <UniqueIdentifier>{a13c00f3-4bf5-4332-b05a-cc2b0c86a71f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\_micro-api-readonly\variants">
+      <UniqueIdentifier>{e5965fb3-3728-44be-b260-41f404d824ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\_micro-api-readonly\variants\mega">
+      <UniqueIdentifier>{175857f9-167e-4b74-a5d0-7cb0e33072b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\_micro-api-readonly\libraries">
+      <UniqueIdentifier>{c4926bb8-299b-4724-872e-3f05810765e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\_micro-api-readonly\libraries\VescUartControl">
+      <UniqueIdentifier>{6b9584f2-5686-4ae0-bb02-e8d197cb4321}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="VescUartSample.ino" />
+    <None Include="..\..\..\..\..\..\..\..\..\..\DEV\Arduino_1_6_8\hardware\arduino\avr\cores\arduino\abi.cpp">
+      <Filter>src\_micro-api-readonly\core</Filter>
+    </None>
+    <None Include="..\..\..\..\..\..\..\..\..\..\DEV\Arduino_1_6_8\hardware\arduino\avr\cores\arduino\Arduino.h">
+      <Filter>src\_micro-api-readonly\core</Filter>
+    </None>
+    <None Include="..\..\..\..\..\..\..\..\..\..\DEV\Arduino_1_6_8\hardware\arduino\avr\cores\arduino\binary.h">
+      <Filter>src\_micro-api-readonly\core</Filter>
+    </None>
+    <None Include="..\..\..\..\..\..\..\..\..\..\DEV\Arduino_1_6_8\hardware\arduino\avr\cores\arduino\CDC.cpp">
+      <Filter>src\_micro-api-readonly\core</Filter>
+    </None>
+    <None Include="..\..\..\..\..\..\..\..\..\..\DEV\Arduino_1_6_8\hardware\arduino\avr\cores\arduino\Client.h">
+      <Filter>src\_micro-api-readonly\core</Filter>
+    </None>
+    <None Include="..\..\..\..\..\..\..\..\..\..\DEV\Arduino_1_6_8\hardware\arduino\avr\cores\arduino\HardwareSerial.cpp">
+      <Filter>src\_micro-api-readonly\core</Filter>
+    </None>
+    <None Include="..\..\..\..\..\..\..\..\..\..\DEV\Arduino_1_6_8\hardware\arduino\avr\cores\arduino\HardwareSerial.h">
+      <Filter>src\_micro-api-readonly\core</Filter>
+    </None>
+    <None Include="..\..\..\..\..\..\..\..\..\..\DEV\Arduino_1_6_8\hardware\arduino\avr\cores\arduino\HardwareSerial0.cpp">
+      <Filter>src\_micro-api-readonly\core</Filter>
+    </None>
+    <None Include="..\..\..\..\..\..\..\..\..\..\DEV\Arduino_1_6_8\hardware\arduino\avr\cores\arduino\HardwareSerial1.cpp">
+      <Filter>src\_micro-api-readonly\core</Filter>
+    </None>
+    <None Include="..\..\..\..\..\..\..\..\..\..\DEV\Arduino_1_6_8\hardware\arduino\avr\cores\arduino\HardwareSerial2.cpp">
+      <Filter>src\_micro-api-readonly\core</Filter>
+    </None>
+    <None Include="..\..\..\..\..\..\..\..\..\..\DEV\Arduino_1_6_8\hardware\arduino\avr\cores\arduino\HardwareSerial3.cpp">
+      <Filter>src\_micro-api-readonly\core</Filter>
+    </None>
+    <None Include="..\..\..\..\..\..\..\..\..\..\DEV\Arduino_1_6_8\hardware\arduino\avr\cores\arduino\HardwareSerial_private.h">
+      <Filter>src\_micro-api-readonly\core</Filter>
+    </None>
+    <None Include="..\..\..\..\..\..\..\..\..\..\DEV\Arduino_1_6_8\hardware\arduino\avr\cores\arduino\IPAddress.cpp">
+      <Filter>src\_micro-api-readonly\core</Filter>
+    </None>
+    <None Include="..\..\..\..\..\..\..\..\..\..\DEV\Arduino_1_6_8\hardware\arduino\avr\cores\arduino\IPAddress.h">
+      <Filter>src\_micro-api-readonly\core</Filter>
+    </None>
+    <None Include="..\..\..\..\..\..\..\..\..\..\DEV\Arduino_1_6_8\hardware\arduino\avr\cores\arduino\main.cpp">
+      <Filter>src\_micro-api-readonly\core</Filter>
+    </None>
+    <None Include="..\..\..\..\..\..\..\..\..\..\DEV\Arduino_1_6_8\hardware\arduino\avr\cores\arduino\new.cpp">
+      <Filter>src\_micro-api-readonly\core</Filter>
+    </None>
+    <None Include="..\..\..\..\..\..\..\..\..\..\DEV\Arduino_1_6_8\hardware\arduino\avr\cores\arduino\new.h">
+      <Filter>src\_micro-api-readonly\core</Filter>
+    </None>
+    <None Include="..\..\..\..\..\..\..\..\..\..\DEV\Arduino_1_6_8\hardware\arduino\avr\cores\arduino\PluggableUSB.cpp">
+      <Filter>src\_micro-api-readonly\core</Filter>
+    </None>
+    <None Include="..\..\..\..\..\..\..\..\..\..\DEV\Arduino_1_6_8\hardware\arduino\avr\cores\arduino\PluggableUSB.h">
+      <Filter>src\_micro-api-readonly\core</Filter>
+    </None>
+    <None Include="..\..\..\..\..\..\..\..\..\..\DEV\Arduino_1_6_8\hardware\arduino\avr\cores\arduino\Print.cpp">
+      <Filter>src\_micro-api-readonly\core</Filter>
+    </None>
+    <None Include="..\..\..\..\..\..\..\..\..\..\DEV\Arduino_1_6_8\hardware\arduino\avr\cores\arduino\Print.h">
+      <Filter>src\_micro-api-readonly\core</Filter>
+    </None>
+    <None Include="..\..\..\..\..\..\..\..\..\..\DEV\Arduino_1_6_8\hardware\arduino\avr\cores\arduino\Printable.h">
+      <Filter>src\_micro-api-readonly\core</Filter>
+    </None>
+    <None Include="..\..\..\..\..\..\..\..\..\..\DEV\Arduino_1_6_8\hardware\arduino\avr\cores\arduino\Server.h">
+      <Filter>src\_micro-api-readonly\core</Filter>
+    </None>
+    <None Include="..\..\..\..\..\..\..\..\..\..\DEV\Arduino_1_6_8\hardware\arduino\avr\cores\arduino\Stream.cpp">
+      <Filter>src\_micro-api-readonly\core</Filter>
+    </None>
+    <None Include="..\..\..\..\..\..\..\..\..\..\DEV\Arduino_1_6_8\hardware\arduino\avr\cores\arduino\Stream.h">
+      <Filter>src\_micro-api-readonly\core</Filter>
+    </None>
+    <None Include="..\..\..\..\..\..\..\..\..\..\DEV\Arduino_1_6_8\hardware\arduino\avr\cores\arduino\Tone.cpp">
+      <Filter>src\_micro-api-readonly\core</Filter>
+    </None>
+    <None Include="..\..\..\..\..\..\..\..\..\..\DEV\Arduino_1_6_8\hardware\arduino\avr\cores\arduino\Udp.h">
+      <Filter>src\_micro-api-readonly\core</Filter>
+    </None>
+    <None Include="..\..\..\..\..\..\..\..\..\..\DEV\Arduino_1_6_8\hardware\arduino\avr\cores\arduino\USBAPI.h">
+      <Filter>src\_micro-api-readonly\core</Filter>
+    </None>
+    <None Include="..\..\..\..\..\..\..\..\..\..\DEV\Arduino_1_6_8\hardware\arduino\avr\cores\arduino\USBCore.cpp">
+      <Filter>src\_micro-api-readonly\core</Filter>
+    </None>
+    <None Include="..\..\..\..\..\..\..\..\..\..\DEV\Arduino_1_6_8\hardware\arduino\avr\cores\arduino\USBCore.h">
+      <Filter>src\_micro-api-readonly\core</Filter>
+    </None>
+    <None Include="..\..\..\..\..\..\..\..\..\..\DEV\Arduino_1_6_8\hardware\arduino\avr\cores\arduino\USBDesc.h">
+      <Filter>src\_micro-api-readonly\core</Filter>
+    </None>
+    <None Include="..\..\..\..\..\..\..\..\..\..\DEV\Arduino_1_6_8\hardware\arduino\avr\cores\arduino\WCharacter.h">
+      <Filter>src\_micro-api-readonly\core</Filter>
+    </None>
+    <None Include="..\..\..\..\..\..\..\..\..\..\DEV\Arduino_1_6_8\hardware\arduino\avr\cores\arduino\wiring_private.h">
+      <Filter>src\_micro-api-readonly\core</Filter>
+    </None>
+    <None Include="..\..\..\..\..\..\..\..\..\..\DEV\Arduino_1_6_8\hardware\arduino\avr\cores\arduino\wiring_pulse.S">
+      <Filter>src\_micro-api-readonly\core</Filter>
+    </None>
+    <None Include="..\..\..\..\..\..\..\..\..\..\DEV\Arduino_1_6_8\hardware\arduino\avr\cores\arduino\WMath.cpp">
+      <Filter>src\_micro-api-readonly\core</Filter>
+    </None>
+    <None Include="..\..\..\..\..\..\..\..\..\..\DEV\Arduino_1_6_8\hardware\arduino\avr\cores\arduino\WString.cpp">
+      <Filter>src\_micro-api-readonly\core</Filter>
+    </None>
+    <None Include="..\..\..\..\..\..\..\..\..\..\DEV\Arduino_1_6_8\hardware\arduino\avr\cores\arduino\WString.h">
+      <Filter>src\_micro-api-readonly\core</Filter>
+    </None>
+    <None Include="..\..\..\..\..\..\..\..\..\..\DEV\Arduino_1_6_8\hardware\arduino\avr\variants\mega\pins_arduino.h">
+      <Filter>src\_micro-api-readonly\variants\mega</Filter>
+    </None>
+    <None Include="..\..\buffer.cpp">
+      <Filter>src\_micro-api-readonly\libraries\VescUartControl</Filter>
+    </None>
+    <None Include="..\..\buffer.h">
+      <Filter>src\_micro-api-readonly\libraries\VescUartControl</Filter>
+    </None>
+    <None Include="..\..\Config.txt">
+      <Filter>src\_micro-api-readonly\libraries\VescUartControl</Filter>
+    </None>
+    <None Include="..\..\crc.cpp">
+      <Filter>src\_micro-api-readonly\libraries\VescUartControl</Filter>
+    </None>
+    <None Include="..\..\crc.h">
+      <Filter>src\_micro-api-readonly\libraries\VescUartControl</Filter>
+    </None>
+    <None Include="..\..\datatypes.h">
+      <Filter>src\_micro-api-readonly\libraries\VescUartControl</Filter>
+    </None>
+    <None Include="..\..\local_datatypes.h">
+      <Filter>src\_micro-api-readonly\libraries\VescUartControl</Filter>
+    </None>
+    <None Include="..\..\printf.h">
+      <Filter>src\_micro-api-readonly\libraries\VescUartControl</Filter>
+    </None>
+    <None Include="..\..\VescUart.cpp">
+      <Filter>src\_micro-api-readonly\libraries\VescUartControl</Filter>
+    </None>
+    <None Include="..\..\VescUart.h">
+      <Filter>src\_micro-api-readonly\libraries\VescUartControl</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="__vm\.VescUartSample.vsarduino.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

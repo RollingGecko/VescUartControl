@@ -503,7 +503,7 @@ struct mc_values{
 	
 	float temp_fet_filtered;
     float temp_motor_filtered;
-	float avg_motor_current;
+	float avg_Motor_Current;
 	float avg_input_current;
 	float avg_id;
 	float avg_iq;
