@@ -19,6 +19,9 @@ along with this program.If not, see <http://www.gnu.org/licenses/>.
 #ifndef _VESCUART_h
 #define _VESCUART_h
 
+#define DEBUG
+#define DEBUGSERIAL Serial
+
 //#include "Config.h" 
 
 /*TThis library was created on an Arduino 2560 with different serial ports to have a better possibility

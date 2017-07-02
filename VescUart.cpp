@@ -19,6 +19,8 @@ along with this program.If not, see <http://www.gnu.org/licenses/>.
 #include "buffer.h"
 #include "crc.h"
 
+
+
 bool UnpackPayload(uint8_t* message, int lenMes, uint8_t* payload, int lenPa);
 bool ProcessReadPacket(uint8_t* message, struct bldcMeasure& values, int len);
 
@@ -164,19 +166,19 @@ bool ProcessReadPacket(uint8_t* message, struct bldcMeasure& values, int len) {
 	{
 
 	case COMM_GET_VALUES:
-		values.tempFetFiltered	= buffer_get_float16(message, 1e1, &ind);
+		values.tempFetFiltered		= buffer_get_float16(message, 1e1, &ind);
 		values.tempMotorFiltered	= buffer_get_float16(message, 1e1, &ind);
-		values.avgMotorCurrent	= buffer_get_float32(message, 100.0, &ind);
-		values.avgInputCurrent	= buffer_get_float32(message, 100.0, &ind);
+		values.avgMotorCurrent		= buffer_get_float32(message, 100.0, &ind);
+		values.avgInputCurrent		= buffer_get_float32(message, 100.0, &ind);
 		values.avgId				= buffer_get_float32(message, 1e2, &ind);
 		values.avgIq				= buffer_get_float32(message, 1e2, &ind);
 		values.dutyNow				= buffer_get_float16(message, 1000.0, &ind);
 		values.rpm					= buffer_get_float32(message, 1.0, &ind);
-		values.inpVoltage		= buffer_get_float16(message, 10.0, &ind);
-		values.ampHours			= buffer_get_float32(message, 10000.0, &ind);
-		values.ampHoursCharged	= buffer_get_float32(message, 10000.0, &ind);
+		values.inpVoltage			= buffer_get_float16(message, 10.0, &ind);
+		values.ampHours				= buffer_get_float32(message, 10000.0, &ind);
+		values.ampHoursCharged		= buffer_get_float32(message, 10000.0, &ind);
 		values.wattHours			= buffer_get_float32(message, 1e4, &ind);
-		values.watthoursCharged	= buffer_get_float32(message, 1e4, &ind);
+		values.watthoursCharged		= buffer_get_float32(message, 1e4, &ind);
 		values.tachometer			= buffer_get_int32(message, &ind);
 		values.tachometerAbs		= buffer_get_int32(message, &ind);
 		values.faultCode			= message[ind];
@@ -196,7 +198,7 @@ bool VescUartGetValue(struct bldcMeasure& values) {
 	PackSendPayload(command, 1);
 	delay(100); //needed, otherwise data is not read
 	int lenPayload = ReceiveUartMessage(payload);
-	if (lenPayload > 55) {
+	if (lenPayload > 1) {
 		bool read = ProcessReadPacket(payload, values, lenPayload); //returns true if sucessful
 		return read;
 	}
