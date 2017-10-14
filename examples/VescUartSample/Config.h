@@ -18,7 +18,8 @@ along with this program.If not, see <http://www.gnu.org/licenses/>.
 #ifndef _CONFIG_h
 #define _CONFIG_h
 
-  #define SERIALIO Serial1  
-  #define DEBUGSERIAL Serial
+#define SERIALIO Serial1
+#define DEBUGSERIAL Serial
+
 
 #endif

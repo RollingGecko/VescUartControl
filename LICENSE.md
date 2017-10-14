@@ -1,5 +1,5 @@
 VescUartControl library
-Copyright 2015 - 2020 Andreas Chaitidis Andreas.Chaitidis@gmail.com
+Copyright 2015 - 2017 Andreas Chaitidis Andreas.Chaitidis@gmail.com
 
 This program is free software : you can redistribute it and / or modify
 it under the terms of the GNU General Public License as published by

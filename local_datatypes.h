@@ -20,7 +20,6 @@ struct bldcMeasure {
 	long tachometerAbs;
 	int faultCode;
 };
-
 //Define remote Package
 
 struct remotePackage {

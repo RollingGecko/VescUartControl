@@ -10,21 +10,26 @@
 
 //Include libraries copied from VESC
 
+#define DEBUG 
+#include "Config.h"
 #include "VescUart.h"
 #include "datatypes.h"
 
+//ToDo: Config wird nicht gezogen
+//ToDo: #define DEBUG wird nicht nach VescUart.h geschoben
 
-#define DEBUG
 unsigned long count;
 
 void setup() {
 	
 	//Setup UART port
-	Serial1.begin(115200);
+	SERIALIO.begin(115200);
 #ifdef DEBUG
 	//SEtup debug port
-	Serial.begin(115200);
+	DEBUGSERIAL.begin(115200);
+	SetDebugSerialPort(&DEBUGSERIAL);
 	#endif
+	SetSerialPort(&SERIALIO);
 }
 
 struct bldcMeasure measuredVal;
@@ -40,7 +45,7 @@ void loop() {
 	//}
 	
 	if (VescUartGetValue(measuredVal)) {
-		Serial.print("Loop: "); Serial.println(count++);
+		DEBUGSERIAL.print("Loop: "); DEBUGSERIAL.println(count++);
 		SerialPrint(measuredVal);
 	}
 	else
