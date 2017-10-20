@@ -67,6 +67,16 @@ If you want to use debug, uncomment DEBUGSERIAL and define a port.*/
 
 #include "datatypes.h"
 #include "local_datatypes.h"
+
+///SetSerialPort sets the serial to communicate with the VESC
+///Multiple ports possible
+void SetSerialPort(HardwareSerial*  _serialPort1, HardwareSerial*  _serialPort2, HardwareSerial*  _serialPort3, HardwareSerial*  _serialPort4);
+void SetSerialPort(HardwareSerial* _serialPort);
+
+///SetDebugSerialPort sets the serial for debug information
+
+void SetDebugSerialPort(HardwareSerial * _debugSerialPort);
+
 ///PackSendPayload Packs the payload and sends it over Serial.
 ///Define in a Config.h a SERIAL with the Serial in Arduino Style you want to you
 ///@param: payload as the payload [unit8_t Array] with length of int lenPayload
