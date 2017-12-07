@@ -75,7 +75,7 @@ void SetSerialPort(HardwareSerial* _serialPort);
 
 ///SetDebugSerialPort sets the serial for debug information
 
-void SetDebugSerialPort(HardwareSerial * _debugSerialPort);
+void SetDebugSerialPort(HardwareSerial* _debugSerialPort);
 
 ///PackSendPayload Packs the payload and sends it over Serial.
 ///Define in a Config.h a SERIAL with the Serial in Arduino Style you want to you
