@@ -12,24 +12,23 @@
 
 #define DEBUG 
 #include "Config.h"
-#include "VescUart.h"
-#include "datatypes.h"
+#include <VescUart.h>
+#include <datatypes.h>
 
-//ToDo: Config wird nicht gezogen
-//ToDo: #define DEBUG wird nicht nach VescUart.h geschoben
 
 unsigned long count;
 
 void setup() {
 	
 	//Setup UART port
+	SetSerialPort(&SERIALIO);
 	SERIALIO.begin(115200);
 #ifdef DEBUG
 	//SEtup debug port
-	DEBUGSERIAL.begin(115200);
 	SetDebugSerialPort(&DEBUGSERIAL);
+	DEBUGSERIAL.begin(115200);
 	#endif
-	SetSerialPort(&SERIALIO);
+	
 }
 
 struct bldcMeasure measuredVal;
