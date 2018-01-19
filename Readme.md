@@ -1,3 +1,5 @@
+#HE PROJECT  ID DISCONTINOUED. I'M SORRY.
+
 #VescUartControl library
 
 Library for arduino to interface over UART with the Vesc BLDC controler (http://vedder.se/2015/01/vesc-open-source-esc/)
