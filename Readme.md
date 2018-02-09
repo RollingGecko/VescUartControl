@@ -1,9 +1,6 @@
 ********************************************************************************************************************
 
 #THE PROJECT  ID DISCONTINUED. I'M SORRY.
-But I created a gitter account where all people using VescUartControl can come together and continue the development.
-
-https://gitter.im/VescUartControl/Lobby?utm_source=share-link&utm_medium=link&utm_campaign=share-link
 
 If you send me a pull request where you also confirm, that it is well tested, than I will merge it to this project.
 
