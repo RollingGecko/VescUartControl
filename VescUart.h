@@ -19,11 +19,8 @@ along with this program.If not, see <http://www.gnu.org/licenses/>.
 #ifndef _VESCUART_h
 #define _VESCUART_h
 
-#pragma got to libh
-
 //#include <Config.h>
 #include <HardwareSerial.h>
-//#include <usb_serial.h>
 
 #if defined(__MK20DX128__) || defined(__MK20DX256__) || defined(__MK64FX512__) || defined(__MK66FX1M0__)
   #if defined(USE_TEENSY_HW_SERIAL)
@@ -31,6 +28,7 @@ along with this program.If not, see <http://www.gnu.org/licenses/>.
   #else
     //#include <usb_serial.h>  // Teensy 3.0 and 3.1
     #define DEBUG_SERIAL_CLASS usb_serial_class
+    #pragma using usb_serial_class for vesc debug_serial 
   #endif
 #elif defined(_SAM3XA_)
   #include <UARTClass.h>  // Arduino Due

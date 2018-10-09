@@ -19,9 +19,6 @@ along with this program.If not, see <http://www.gnu.org/licenses/>.
 #include "buffer.h"
 #include "crc.h"
 
-
-#pragma got to libc
-
 static HardwareSerial* vesc_io;
 static DEBUG_SERIAL_CLASS* debugSerialPort = NULL;
 
