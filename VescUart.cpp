@@ -19,36 +19,46 @@ along with this program.If not, see <http://www.gnu.org/licenses/>.
 #include "buffer.h"
 #include "crc.h"
 
-static HardwareSerial* serialPort1;
-static HardwareSerial* serialPort2;
-static HardwareSerial* serialPort3;
-static HardwareSerial* serialPort4;
-static HardwareSerial* debugSerialPort = NULL;
+
+#pragma got to libc
+
+// static HardwareSerial* serialPort1;
+// static HardwareSerial* serialPort2;
+// static HardwareSerial* serialPort3;
+// static HardwareSerial* serialPort4;
+static HardwareSerial* vesc_io;
+static DEBUG_SERIAL_CLASS* debugSerialPort = NULL;
 
 bool UnpackPayload(uint8_t* message, int lenMes, uint8_t* payload, int lenPa);
 bool ProcessReadPacket(uint8_t* message, struct bldcMeasure& values, int len);
 
-void SetSerialPort(HardwareSerial*  _serialPort1, HardwareSerial*  _serialPort2, HardwareSerial*  _serialPort3, HardwareSerial*  _serialPort4)
-{
-	serialPort1 = _serialPort1;
-	serialPort2 = _serialPort2;
-	serialPort3 = _serialPort3;
-	serialPort4 = _serialPort4;
-}
+//void SetSerialPort(HardwareSerial*  _serialPort1, HardwareSerial*  _serialPort2, HardwareSerial*  _serialPort3, HardwareSerial*  _serialPort4)
+//{
+//	serialPort1 = _serialPort1;
+//	serialPort2 = _serialPort2;
+//	serialPort3 = _serialPort3;
+//	serialPort4 = _serialPort4;
+// }
 
 void SetSerialPort(HardwareSerial* _serialPort)
 {
-	SetSerialPort(_serialPort, _serialPort, _serialPort, _serialPort);
+	vesc_io = _serialPort;
+	//SetSerialPort(_serialPort, _serialPort, _serialPort, _serialPort);
 }
 
-void SetDebugSerialPort(HardwareSerial * _debugSerialPort)
+
+// void SetDebugSerialPort(HardwareSerial * _debugSerialPort)
+// {
+	// debugSerialPort = _debugSerialPort;
+// }
+void SetDebugSerialPort(DEBUG_SERIAL_CLASS* _debugSerialPort)
 {
 	debugSerialPort = _debugSerialPort;
 }
 
 
 //HardwareSerial *serial; ///@param num as integer with the serial port in use (0=Serial; 1=Serial1; 2=Serial2; 3=Serial3;)
-int ReceiveUartMessage(uint8_t* payloadReceived, int num) {
+int ReceiveUartMessage(uint8_t* payloadReceived, HardwareSerial* _vescserialPort) {
 
 	//Messages <= 255 start with 2. 2nd byte is length
 	//Messages >255 start with 3. 2nd and 3rd byte is length combined with 1st >>8 and then &0xFF
@@ -58,30 +68,29 @@ int ReceiveUartMessage(uint8_t* payloadReceived, int num) {
 	bool messageRead = false;
 	uint8_t messageReceived[256];
 	int lenPayload = 0;
-	HardwareSerial* serial;
+	//HardwareSerial* serial;
 	
 
-	switch (num) {
-		case 0:
-			serial = serialPort1;
-			break;
-		case 1:
-			serial = serialPort2;
-			break;
-		case 2:
-			serial = serialPort3;
-			break;
-		case 3:
-			serial = serialPort4;
-			break;
-		default:
-			break;
+	// switch (num) {
+		// case 0:
+			// serial = serialPort1;
+			// break;
+		// case 1:
+			// serial = serialPort2;
+			// break;
+		// case 2:
+			// serial = serialPort3;
+			// break;
+		// case 3:
+			// serial = serialPort4;
+			// break;
+		// default:
+			// break;
+	// }
 
-	}
+	while (_vescserialPort->available()) {
 
-	while (serial->available()) {
-
-		messageReceived[counter++] = serial->read();
+		messageReceived[counter++] = _vescserialPort->read();
 
 		if (counter == 2) {//case if state of 'counter' with last read 1
 
@@ -134,23 +143,23 @@ bool UnpackPayload(uint8_t* message, int lenMes, uint8_t* payload, int lenPay) {
 	crcMessage = message[lenMes - 3] << 8;
 	crcMessage &= 0xFF00;
 	crcMessage += message[lenMes - 2];
-if(debugSerialPort!=NULL){
-	debugSerialPort->print("SRC received: "); debugSerialPort->println(crcMessage);
-} // DEBUG
+	if(debugSerialPort!=NULL){
+		debugSerialPort->print("SRC received: "); debugSerialPort->println(crcMessage);
+	} // DEBUG
 
 	//Extract payload:
 	memcpy(payload, &message[2], message[1]);
 
 	crcPayload = crc16(payload, message[1]);
-if(debugSerialPort!=NULL){
-	debugSerialPort->print("SRC calc: "); debugSerialPort->println(crcPayload);
-}
+	if(debugSerialPort!=NULL){
+		debugSerialPort->print("SRC calc: "); debugSerialPort->println(crcPayload);
+	}
 	if (crcPayload == crcMessage)
 	{
-if(debugSerialPort!=NULL){
-		debugSerialPort->print("Received: "); SerialPrint(message, lenMes); debugSerialPort->println();
-		debugSerialPort->print("Payload :      "); SerialPrint(payload, message[1] - 1); debugSerialPort->println();
-} // DEBUG
+	if(debugSerialPort!=NULL){
+			debugSerialPort->print("Received: "); SerialPrint(message, lenMes); debugSerialPort->println();
+			debugSerialPort->print("Payload :      "); SerialPrint(payload, message[1] - 1); debugSerialPort->println();
+	} // DEBUG
 
 		return true;
 	}
@@ -163,7 +172,7 @@ if(debugSerialPort!=NULL){
 
 
 
-int PackSendPayload(uint8_t* payload, int lenPay, int num) {
+int PackSendPayload(uint8_t* payload, int lenPay, HardwareSerial* _vescserialPort) {
 	uint16_t crcPayload = crc16(payload, lenPay);
 	int count = 0;
 	uint8_t messageSend[256];
@@ -187,33 +196,33 @@ int PackSendPayload(uint8_t* payload, int lenPay, int num) {
 	messageSend[count++] = 3;
 	messageSend[count] = NULL;
 
-if(debugSerialPort!=NULL){
-	debugSerialPort->print("UART package send: "); SerialPrint(messageSend, count);
+	if(debugSerialPort!=NULL){
+		debugSerialPort->print("UART package send: "); SerialPrint(messageSend, count);
 
-} // DEBUG
+	} // DEBUG
 
 
-	HardwareSerial *serial;
+	//HardwareSerial *serial;
 
-	switch (num) {
-		case 0:
-			serial=serialPort1;
-			break;
-		case 1:
-			serial=serialPort2;
-			break;
-		case 2:
-			serial=serialPort3;
-			break;
-		case 3:
-			serial=serialPort4;
-			break;
-		default:
-			break;
-	}
+	// switch (num) {
+		// case 0:
+			// serial=serialPort1;
+			// break;
+		// case 1:
+			// serial=serialPort2;
+			// break;
+		// case 2:
+			// serial=serialPort3;
+			// break;
+		// case 3:
+			// serial=serialPort4;
+			// break;
+		// default:
+			// break;
+	// }
 
 	//Sending package
-	serial->write(messageSend, count);
+	_vescserialPort->write(messageSend, count);
 
 
 	//Returns number of send bytes
@@ -258,12 +267,12 @@ bool ProcessReadPacket(uint8_t* message, struct bldcMeasure& values, int len) {
 
 }
 
-bool VescUartGetValue(bldcMeasure& values, int num) {
+bool VescUartGetValue(bldcMeasure& values, HardwareSerial* _vescserialPort) {
 	uint8_t command[1] = { COMM_GET_VALUES };
 	uint8_t payload[256];
-	PackSendPayload(command, 1, num);
+	PackSendPayload(command, 1, _vescserialPort);
 	delay(10); //needed, otherwise data is not read
-	int lenPayload = ReceiveUartMessage(payload, num);
+	int lenPayload = ReceiveUartMessage(payload, _vescserialPort);
 	if (lenPayload > 1) {
 		bool read = ProcessReadPacket(payload, values, lenPayload); //returns true if sucessful
 		return read;
@@ -274,72 +283,72 @@ bool VescUartGetValue(bldcMeasure& values, int num) {
 	}
 }
 bool VescUartGetValue(bldcMeasure& values) {
-	return VescUartGetValue(values, 0);
+	return VescUartGetValue(values, vesc_io);
 }
 
-void VescUartSetCurrent(float current, int num) {
+void VescUartSetCurrent(float current, HardwareSerial* _vescserialPort) {
 	int32_t index = 0;
 	uint8_t payload[5];
 
 	payload[index++] = COMM_SET_CURRENT ;
 	buffer_append_int32(payload, (int32_t)(current * 1000), &index);
-	PackSendPayload(payload, 5, num);
+	PackSendPayload(payload, 5, _vescserialPort);
 }
 void VescUartSetCurrent(float current){
 	VescUartSetCurrent(current, 0);
 }
 
-void VescUartSetPosition(float position, int num) {
+void VescUartSetPosition(float position, HardwareSerial* _vescserialPort) {
 	int32_t index = 0;
 	uint8_t payload[5];
 
 	payload[index++] = COMM_SET_POS ;
 	buffer_append_int32(payload, (int32_t)(position * 1000000.0), &index);
-	PackSendPayload(payload, 5, num);
+	PackSendPayload(payload, 5, _vescserialPort);
 }
 void VescUartSetPosition(float position) {
-	VescUartSetPosition(position, 0);
+	VescUartSetPosition(position, vesc_io);
 }
 
-void VescUartSetDuty(float duty, int num) {
+void VescUartSetDuty(float duty, HardwareSerial* _vescserialPort) {
 	int32_t index = 0;
 	uint8_t payload[5];
 
 	payload[index++] = COMM_SET_DUTY ;
 	buffer_append_int32(payload, (int32_t)(duty * 100000), &index);
-	PackSendPayload(payload, 5, num);
+	PackSendPayload(payload, 5, _vescserialPort);
 }
 void VescUartSetDuty(float duty) {
-	VescUartSetDuty(duty, 0);
+	VescUartSetDuty(duty, vesc_io);
 }
 
 
-void VescUartSetRPM(float rpm, int num) {
+void VescUartSetRPM(float rpm, HardwareSerial* _vescserialPort) {
 	int32_t index = 0;
 	uint8_t payload[5];
 
 	payload[index++] = COMM_SET_RPM ;
 	buffer_append_int32(payload, (int32_t)(rpm), &index);
-	PackSendPayload(payload, 5, num);
+	PackSendPayload(payload, 5, _vescserialPort);
 }
 void VescUartSetRPM(float rpm) {
-	VescUartSetRPM(rpm, 0);
+	VescUartSetRPM(rpm, vesc_io);
 }
 
-void VescUartSetCurrentBrake(float brakeCurrent, int num) {
+void VescUartSetCurrentBrake(float brakeCurrent, HardwareSerial* _vescserialPort) {
 	int32_t index = 0;
 	uint8_t payload[5];
 
 	payload[index++] = COMM_SET_CURRENT_BRAKE;
 	buffer_append_int32(payload, (int32_t)(brakeCurrent * 1000), &index);
-	PackSendPayload(payload, 5, num);
+	PackSendPayload(payload, 5, _vescserialPort);
 }
 void VescUartSetCurrentBrake(float brakeCurrent) {
-	VescUartSetCurrentBrake(brakeCurrent, 0);
+	VescUartSetCurrentBrake(brakeCurrent, vesc_io);
 }
 
 
-void VescUartSetNunchukValues(remotePackage& data, int num) {
+void VescUartSetNunchukValues(remotePackage& data, HardwareSerial* _vescserialPort) {
 	int32_t ind = 0;
 	uint8_t payload[11];
 	payload[ind++] = COMM_SET_CHUCK_DATA;
@@ -355,16 +364,16 @@ void VescUartSetNunchukValues(remotePackage& data, int num) {
 	payload[ind++] = 0;
 	payload[ind++] = 0;
 
-if(debugSerialPort!=NULL){
-	debugSerialPort->println("Data reached at VescUartSetNunchuckValues:");
-	debugSerialPort->print("valXJoy = "); debugSerialPort->print(data.valXJoy); debugSerialPort->print(" valYJoy = "); debugSerialPort->println(data.valYJoy);
-	debugSerialPort->print("LowerButton = "); debugSerialPort->print(data.valLowerButton); debugSerialPort->print(" UpperButton = "); debugSerialPort->println(data.valUpperButton);
-}
+	if(debugSerialPort!=NULL){
+		debugSerialPort->println("Data reached at VescUartSetNunchuckValues:");
+		debugSerialPort->print("valXJoy = "); debugSerialPort->print(data.valXJoy); debugSerialPort->print(" valYJoy = "); debugSerialPort->println(data.valYJoy);
+		debugSerialPort->print("LowerButton = "); debugSerialPort->print(data.valLowerButton); debugSerialPort->print(" UpperButton = "); debugSerialPort->println(data.valUpperButton);
+	}
 
-	PackSendPayload(payload, 11, num);
+	PackSendPayload(payload, 11, _vescserialPort);
 }
 void VescUartSetNunchukValues(remotePackage& data) {
-	VescUartSetNunchukValues(data, 0);
+	VescUartSetNunchukValues(data, vesc_io);
 }
 
 

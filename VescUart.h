@@ -19,13 +19,29 @@ along with this program.If not, see <http://www.gnu.org/licenses/>.
 #ifndef _VESCUART_h
 #define _VESCUART_h
 
+#pragma got to libh
 
 //#include <Config.h>
 #include <HardwareSerial.h>
+//#include <usb_serial.h>
 
-void SetSerialPort(HardwareSerial* _serialPort1, HardwareSerial* _serialPort2, HardwareSerial* _serialPort3, HardwareSerial* _serialPort4);
-void SetSerialPort(HardwareSerial* _serialPort);
-void SetDebugSerialPort(HardwareSerial* _debugSerialPort);
+#if defined(__MK20DX128__) || defined(__MK20DX256__) || defined(__MK64FX512__) || defined(__MK66FX1M0__)
+  #if defined(USE_TEENSY_HW_SERIAL)
+    #define DEBUG_SERIAL_CLASS HardwareSerial // Teensy HW Serial
+  #else
+    //#include <usb_serial.h>  // Teensy 3.0 and 3.1
+    #define DEBUG_SERIAL_CLASS usb_serial_class
+  #endif
+// #elif defined(_SAM3XA_)
+//   #include <UARTClass.h>  // Arduino Due
+//   #define DEBUG_SERIAL_CLASS UARTClass
+// #elif defined(USE_USBCON)
+//   // Arduino Leonardo USB Serial Port
+//   #define DEBUG_SERIAL_CLASS Serial_
+#else
+  #include <HardwareSerial.h>  // Arduino AVR
+  #define DEBUG_SERIAL_CLASS HardwareSerial
+#endif
 
 
 
@@ -68,28 +84,33 @@ If you want to use debug, uncomment DEBUGSERIAL and define a port.*/
 #include "datatypes.h"
 #include "local_datatypes.h"
 
-///SetSerialPort sets the serial to communicate with the VESC
-///Multiple ports possible
-void SetSerialPort(HardwareSerial*  _serialPort1, HardwareSerial*  _serialPort2, HardwareSerial*  _serialPort3, HardwareSerial*  _serialPort4);
+// ///SetSerialPort sets the serial to communicate with the VESC
+// ///Multiple ports possible
+// //void SetSerialPort(HardwareSerial*  _serialPort1, HardwareSerial*  _serialPort2, HardwareSerial*  _serialPort3, HardwareSerial*  _serialPort4);
+// void SetSerialPort(HardwareSerial* _serialPort);
+
+// ///SetDebugSerialPort sets the serial for debug information
+
+// void SetDebugSerialPort(HardwareSerial* _debugSerialPort);
+
+//void SetSerialPort(HardwareSerial* _serialPort1, HardwareSerial* _serialPort2, HardwareSerial* _serialPort3, HardwareSerial* _serialPort4);
 void SetSerialPort(HardwareSerial* _serialPort);
-
-///SetDebugSerialPort sets the serial for debug information
-
-void SetDebugSerialPort(HardwareSerial* _debugSerialPort);
+//void SetDebugSerialPort(HardwareSerial* _debugSerialPort);
+void SetDebugSerialPort(DEBUG_SERIAL_CLASS* _debugSerialPort);
 
 ///PackSendPayload Packs the payload and sends it over Serial.
 ///Define in a Config.h a SERIAL with the Serial in Arduino Style you want to you
 ///@param: payload as the payload [unit8_t Array] with length of int lenPayload
 ///@return the number of bytes send
 
-int PackSendPayload(uint8_t* payload, int lenPay, int num);
+int PackSendPayload(uint8_t* payload, int lenPay, HardwareSerial* _vescserialPort);
 
 ///ReceiveUartMessage receives the a message over Serial
 ///Define in a Config.h a SERIAL with the Serial in Arduino Style you want to you
 ///@parm the payload as the payload [unit8_t Array]
 ///@return the number of bytes receeived within the payload
 
-int ReceiveUartMessage(uint8_t* payloadReceived, int num);
+int ReceiveUartMessage(uint8_t* payloadReceived, HardwareSerial* _vescserialPort);
 
 ///Help Function to print struct bldcMeasure over Serial for Debug
 ///#define DEBUG necessary
@@ -107,7 +128,7 @@ void SerialPrint(uint8_t* data, int len);
 ///@param num as integer with the serial port in use (0=Serial; 1=Serial1; 2=Serial2; 3=Serial3;)
 ///num must not be set, when only one Serial
 //@return true if success
-bool VescUartGetValue(struct bldcMeasure& values, int num);
+bool VescUartGetValue(struct bldcMeasure& values, HardwareSerial* _vescserialPort);
 bool VescUartGetValue(bldcMeasure& values);
 
 ///Sends a command to VESC to control the motor current
@@ -115,7 +136,7 @@ bool VescUartGetValue(bldcMeasure& values);
 ///@param num as integer with the serial port in use (0=Serial; 1=Serial1; 2=Serial2; 3=Serial3;)
 ///num must not be set, when only one Serial
 
-void VescUartSetCurrent(float current, int num);
+void VescUartSetCurrent(float current, HardwareSerial* _vescserialPort);
 void VescUartSetCurrent(float current);
 
 ///Sends a command to VESC to control the motor brake
@@ -123,7 +144,7 @@ void VescUartSetCurrent(float current);
 ///@param num as integer with the serial port in use (0=Serial; 1=Serial1; 2=Serial2; 3=Serial3;)
 ///num must not be set, when only one Serial
 
-void VescUartSetCurrentBrake(float brakeCurrent, int num);
+void VescUartSetCurrentBrake(float brakeCurrent, HardwareSerial* _vescserialPort);
 void VescUartSetCurrentBrake(float brakeCurrent);
 
 ///Sends values of a joystick and 2 buttons to VESC to control the nunchuk app
@@ -131,7 +152,7 @@ void VescUartSetCurrentBrake(float brakeCurrent);
 ///@param num as integer with the serial port in use (0=Serial; 1=Serial1; 2=Serial2; 3=Serial3;)
 ///num must not be set, when only one Serial
 
-void VescUartSetNunchukValues(remotePackage& data, int num);
+void VescUartSetNunchukValues(remotePackage& data, HardwareSerial* _vescserialPort);
 void VescUartSetNunchukValues(remotePackage& data);
 
 ///Sends a command to VESC to control the motor position
@@ -139,7 +160,7 @@ void VescUartSetNunchukValues(remotePackage& data);
 ///@param num as integer with the serial port in use (0=Serial; 1=Serial1; 2=Serial2; 3=Serial3;)
 ///num must not be set, when only one Serial
 
-void VescUartSetPosition(float position, int num) ;
+void VescUartSetPosition(float position, HardwareSerial* _vescserialPort) ;
 void VescUartSetPosition(float position) ;
 
 ///Sends a command to VESC to control the motor duty cycle
@@ -147,7 +168,7 @@ void VescUartSetPosition(float position) ;
 ///@param num as integer with the serial port in use (0=Serial; 1=Serial1; 2=Serial2; 3=Serial3;)
 ///num must not be set, when only one Serial
 
-void VescUartSetDuty(float duty, int num) ;
+void VescUartSetDuty(float duty, HardwareSerial* _vescserialPort) ;
 void VescUartSetDuty(float duty) ;
 
 ///Sends a command to VESC to control the motor rotational speed
@@ -155,7 +176,7 @@ void VescUartSetDuty(float duty) ;
 ///@param num as integer with the serial port in use (0=Serial; 1=Serial1; 2=Serial2; 3=Serial3;)
 ///num must not be set, when only one Serial
 
-void VescUartSetRPM(float rpm, int num);
+void VescUartSetRPM(float rpm, HardwareSerial* _vescserialPort);
 void VescUartSetRPM(float rpm);
 
 #endif
