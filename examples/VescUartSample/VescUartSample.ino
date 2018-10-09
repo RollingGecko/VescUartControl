@@ -23,10 +23,11 @@ void setup() {
 	//Setup UART port
 	SetSerialPort(&SERIALIO);
 	SERIALIO.begin(115200);
-#ifdef DEBUG
-	//SEtup debug port
-	SetDebugSerialPort(&DEBUGSERIAL);
-	DEBUGSERIAL.begin(115200);
+ 
+  #ifdef DEBUG
+  	//SEtup debug port
+  	SetDebugSerialPort(&DEBUGSERIAL);
+  	DEBUGSERIAL.begin(115200);
 	#endif
 	
 }
@@ -51,10 +52,6 @@ void loop() {
 	{
 		Serial.println("Failed to get data!");
 	}
-	
+
+	delay(250);
 }
-
-
-
-
-
