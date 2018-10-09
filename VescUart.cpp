@@ -22,35 +22,17 @@ along with this program.If not, see <http://www.gnu.org/licenses/>.
 
 #pragma got to libc
 
-// static HardwareSerial* serialPort1;
-// static HardwareSerial* serialPort2;
-// static HardwareSerial* serialPort3;
-// static HardwareSerial* serialPort4;
 static HardwareSerial* vesc_io;
 static DEBUG_SERIAL_CLASS* debugSerialPort = NULL;
 
 bool UnpackPayload(uint8_t* message, int lenMes, uint8_t* payload, int lenPa);
 bool ProcessReadPacket(uint8_t* message, struct bldcMeasure& values, int len);
 
-//void SetSerialPort(HardwareSerial*  _serialPort1, HardwareSerial*  _serialPort2, HardwareSerial*  _serialPort3, HardwareSerial*  _serialPort4)
-//{
-//	serialPort1 = _serialPort1;
-//	serialPort2 = _serialPort2;
-//	serialPort3 = _serialPort3;
-//	serialPort4 = _serialPort4;
-// }
-
 void SetSerialPort(HardwareSerial* _serialPort)
 {
 	vesc_io = _serialPort;
-	//SetSerialPort(_serialPort, _serialPort, _serialPort, _serialPort);
 }
 
-
-// void SetDebugSerialPort(HardwareSerial * _debugSerialPort)
-// {
-	// debugSerialPort = _debugSerialPort;
-// }
 void SetDebugSerialPort(DEBUG_SERIAL_CLASS* _debugSerialPort)
 {
 	debugSerialPort = _debugSerialPort;
@@ -68,25 +50,6 @@ int ReceiveUartMessage(uint8_t* payloadReceived, HardwareSerial* _vescserialPort
 	bool messageRead = false;
 	uint8_t messageReceived[256];
 	int lenPayload = 0;
-	//HardwareSerial* serial;
-	
-
-	// switch (num) {
-		// case 0:
-			// serial = serialPort1;
-			// break;
-		// case 1:
-			// serial = serialPort2;
-			// break;
-		// case 2:
-			// serial = serialPort3;
-			// break;
-		// case 3:
-			// serial = serialPort4;
-			// break;
-		// default:
-			// break;
-	// }
 
 	while (_vescserialPort->available()) {
 
@@ -200,26 +163,6 @@ int PackSendPayload(uint8_t* payload, int lenPay, HardwareSerial* _vescserialPor
 		debugSerialPort->print("UART package send: "); SerialPrint(messageSend, count);
 
 	} // DEBUG
-
-
-	//HardwareSerial *serial;
-
-	// switch (num) {
-		// case 0:
-			// serial=serialPort1;
-			// break;
-		// case 1:
-			// serial=serialPort2;
-			// break;
-		// case 2:
-			// serial=serialPort3;
-			// break;
-		// case 3:
-			// serial=serialPort4;
-			// break;
-		// default:
-			// break;
-	// }
 
 	//Sending package
 	_vescserialPort->write(messageSend, count);
