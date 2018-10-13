@@ -19,6 +19,16 @@ along with this program.If not, see <http://www.gnu.org/licenses/>.
 #ifndef _VESCUART_h
 #define _VESCUART_h
 
+#if defined(ARDUINO) && ARDUINO >= 100
+#include "arduino.h"
+#else
+#include "WProgram.h"
+#endif
+
+#include "datatypes.h"
+#include "local_datatypes.h"
+
+
 //#include <Config.h>
 #include <HardwareSerial.h>
 
@@ -43,22 +53,8 @@ along with this program.If not, see <http://www.gnu.org/licenses/>.
 
 
 
-/*TThis library was created on an Adruinio 2560 with different serial ports to have a better possibility
-to debug. The serial ports are define with #define:
-#define SERIALIO Serial1  		for the UART port to VESC
-#define DEBUGSERIAL Serial		for debugging over USB
-So you need here to define the right serial port for your arduino.
-If you want to use debug, uncomment DEBUGSERIAL and define a port.*/
 
 
-#if defined(ARDUINO) && ARDUINO >= 100
-#include "arduino.h"
-#else
-#include "WProgram.h"
-#endif
-
-#include "datatypes.h"
-#include "local_datatypes.h"
 
 ///SetSerialPort sets the serial to communicate with the VESC
 void SetSerialPort(HardwareSerial* _serialPort);

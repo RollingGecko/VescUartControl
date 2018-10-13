@@ -19,6 +19,8 @@ along with this program.If not, see <http://www.gnu.org/licenses/>.
 #include "buffer.h"
 #include "crc.h"
 
+#pragma got to libc _v1
+
 static HardwareSerial* vesc_io;
 static DEBUG_SERIAL_CLASS* debugSerialPort = NULL;
 
@@ -44,52 +46,76 @@ int ReceiveUartMessage(uint8_t* payloadReceived, HardwareSerial* _vescserialPort
 
 	int counter = 0;
 	int endMessage = 256;
-	bool messageRead = false;
-	uint8_t messageReceived[256];
 	int lenPayload = 0;
+	uint8_t messageReceived[256];
+	char terminator = 0x03;
+	bool messageRead = false;
+	
 
-	while (_vescserialPort->available()) {
+	// better serial reader
+	_vescserialPort->setTimeout(20); // make a define
 
-		messageReceived[counter++] = _vescserialPort->read();
+   	counter +=  _vescserialPort->readBytes(messageReceived, 2); // get payload size
+	endMessage = messageReceived[1] + 5; //Payload size + 2 for sice + 3 for SRC and End.
+	lenPayload = messageReceived[1];
+	counter +=  _vescserialPort->readBytes(&messageReceived[2], endMessage-2); // get payload, crc, endbyte
 
-		if (counter == 2) {//case if state of 'counter' with last read 1
-
-			switch (messageReceived[0])
-			{
-			case 2:
-				endMessage = messageReceived[1] + 5; //Payload size + 2 for sice + 3 for SRC and End.
-				lenPayload = messageReceived[1];
-				break;
-			case 3:
-				//ToDo: Add Message Handling > 255 (starting with 3)
-				break;
-			default:
-				break;
-			}
-
+	if (counter == endMessage && messageReceived[endMessage - 1] == terminator) { // end charecter not included
+		messageReceived[endMessage] = 0;
+		if (debugSerialPort != NULL) {
+			debugSerialPort->println("End of message reached!");
 		}
-		if (counter >= sizeof(messageReceived))
-		{
-			break;
-		}
-
-		if (counter == endMessage && messageReceived[endMessage - 1] == 3) {//+1: Because of counter++ state of 'counter' with last read = "endMessage"
-			messageReceived[endMessage] = 0;
-			if (debugSerialPort != NULL) {
-				debugSerialPort->println("End of message reached!");
-			}
-			messageRead = true;
-			break; //Exit if end of message is reached, even if there is still more data in buffer.
-		}
+		messageRead = true;
 	}
+
+
+
+	// // while (_vescserialPort->available()) {
+	// 	messageReceived[counter++] = _vescserialPort->Read();
+	// 	// debugSerialPort->print("gotbyte, counter: ");debugSerialPort->println(counter);
+	// 	if (counter == 2) {//case if state of 'counter' with last read 1
+	// 		switch (messageReceived[0])
+	// 		{
+	// 		case 2:
+	// 			endMessage = messageReceived[1] + 5; //Payload size + 2 for sice + 3 for SRC and End.
+	// 			lenPayload = messageReceived[1];
+	// 			break;
+	// 		case 3:
+	// 			//ToDo: Add Message Handling > 255 (starting with 3)
+	// 			break;
+	// 		default:
+	// 			debugSerialPort->println("!!");
+	// 			break;
+	// 		}
+	// 	}
+	// 	if (counter >= sizeof(messageReceived))
+	// 	{	// message bffer overflow Handling
+	// 		break;
+	// 	}
+	// 	if (counter == endMessage && messageReceived[endMessage - 1] == 3) {//+1: Because of counter++ state of 'counter' with last read = "endMessage"
+	// 		messageReceived[endMessage] = 0;
+	// 		if (debugSerialPort != NULL) {
+	// 			debugSerialPort->println("End of message reached!");
+	// 		}
+	// 		messageRead = true;
+	// 		break; //Exit if end of message is reached, even if there is still more data in buffer.
+	// 	}
+	// }
+
+
+
 	bool unpacked = false;
 	if (messageRead) {
 		unpacked = UnpackPayload(messageReceived, endMessage, payloadReceived, messageReceived[1]);
 	}
+	else { 
+		if (debugSerialPort != NULL) {
+			debugSerialPort->println("recieved incomplete message!");
+		}
+	}
 	if (unpacked)
 	{
 		return lenPayload; //Message was read
-
 	}
 	else {
 		return 0; //No Message Read
@@ -210,8 +236,10 @@ bool ProcessReadPacket(uint8_t* message, struct bldcMeasure& values, int len) {
 bool VescUartGetValue(bldcMeasure& values, HardwareSerial* _vescserialPort) {
 	uint8_t command[1] = { COMM_GET_VALUES };
 	uint8_t payload[256];
+	_vescserialPort->flush(); // move to comm function directly?
 	PackSendPayload(command, 1, _vescserialPort);
-	delay(10); //needed, otherwise data is not read
+	//delay(10); //needed, otherwise data is not read
+	// recieve now waits for first byte with timeout
 	int lenPayload = ReceiveUartMessage(payload, _vescserialPort);
 	if (lenPayload > 1) {
 		bool read = ProcessReadPacket(payload, values, lenPayload); //returns true if sucessful
@@ -319,7 +347,7 @@ void VescUartSetNunchukValues(remotePackage& data) {
 
 void SerialPrint(uint8_t* data, int len) {
 
-	//	debugSerialPort->print("Data to display: "); debugSerialPort->println(sizeof(data));
+	debugSerialPort->print("Data to display: "); debugSerialPort->println(len);
 
 	for (int i = 0; i <= len; i++)
 	{
