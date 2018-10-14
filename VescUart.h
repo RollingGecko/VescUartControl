@@ -16,6 +16,8 @@ along with this program.If not, see <http://www.gnu.org/licenses/>.
 
 */
 
+// This lib version tested on vesc fw 3.38 and 3.40
+
 #ifndef _VESCUART_h
 #define _VESCUART_h
 
