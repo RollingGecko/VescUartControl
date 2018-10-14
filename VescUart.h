@@ -20,16 +20,14 @@ along with this program.If not, see <http://www.gnu.org/licenses/>.
 #define _VESCUART_h
 
 #if defined(ARDUINO) && ARDUINO >= 100
-#include "arduino.h"
+  #include "arduino.h"
 #else
-#include "WProgram.h"
+  #include "WProgram.h"
 #endif
 
 #include "datatypes.h"
 #include "local_datatypes.h"
 
-
-//#include <Config.h>
 #include <HardwareSerial.h>
 
 #if defined(__MK20DX128__) || defined(__MK20DX256__) || defined(__MK64FX512__) || defined(__MK66FX1M0__)
@@ -51,7 +49,10 @@ along with this program.If not, see <http://www.gnu.org/licenses/>.
   #define DEBUG_SERIAL_CLASS HardwareSerial
 #endif
 
-
+#ifndef RX_TIMEOUT
+  //SEtup debug port
+  #define RX_TIMEOUT 10  // 10 ms default timeout
+#endif
 
 
 
@@ -80,7 +81,7 @@ int ReceiveUartMessage(uint8_t* payloadReceived, HardwareSerial* _vescserialPort
 ///#define DEBUG necessary
 ///Define in a Config.h the DEBUGSERIAL you want to use
 
-void SerialPrint(const struct bldcMeasure& values);
+void SerialPrint(const struct bldcMeasure& values, DEBUG_SERIAL_CLASS*  print_serialPort );
 
 ///Help Function to print uint8_t array over Serial for Debug
 ///Define in a Config.h the DEBUGSERIAL you want to use

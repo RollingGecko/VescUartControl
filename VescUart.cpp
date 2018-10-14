@@ -19,7 +19,6 @@ along with this program.If not, see <http://www.gnu.org/licenses/>.
 #include "buffer.h"
 #include "crc.h"
 
-#pragma got to libc _v1
 
 static HardwareSerial* vesc_io;
 static DEBUG_SERIAL_CLASS* debugSerialPort = NULL;
@@ -37,8 +36,6 @@ void SetDebugSerialPort(DEBUG_SERIAL_CLASS* _debugSerialPort)
 	debugSerialPort = _debugSerialPort;
 }
 
-
-//HardwareSerial *serial; ///@param num as integer with the serial port in use (0=Serial; 1=Serial1; 2=Serial2; 3=Serial3;)
 int ReceiveUartMessage(uint8_t* payloadReceived, HardwareSerial* _vescserialPort) {
 
 	//Messages <= 255 start with 2. 2nd byte is length
@@ -48,73 +45,37 @@ int ReceiveUartMessage(uint8_t* payloadReceived, HardwareSerial* _vescserialPort
 	int endMessage = 256;
 	int lenPayload = 0;
 	uint8_t messageReceived[256];
-	char terminator = 0x03;
+	const char terminator = 0x03;
 	bool messageRead = false;
+	bool unpacked = false;
 	
-
-	// better serial reader
-	_vescserialPort->setTimeout(20); // make a define
+	_vescserialPort->setTimeout(RX_TIMEOUT); // set timeout for messge recieve
 
    	counter +=  _vescserialPort->readBytes(messageReceived, 2); // get payload size
-	endMessage = messageReceived[1] + 5; //Payload size + 2 for sice + 3 for SRC and End.
-	lenPayload = messageReceived[1];
+
+		switch (messageReceived[0]){
+		case 2:
+			endMessage = messageReceived[1] + 5; //Payload size + 2 for sice + 3 for SRC and End.
+			lenPayload = messageReceived[1];
+			break;
+		case 3:
+			//ToDo: Add Message Handling > 255 (starting with 3)
+			break;
+		default:
+			break;
+		}
+
 	counter +=  _vescserialPort->readBytes(&messageReceived[2], endMessage-2); // get payload, crc, endbyte
 
-	if (counter == endMessage && messageReceived[endMessage - 1] == terminator) { // end charecter not included
+	if (counter == endMessage && messageReceived[endMessage - 1] == terminator) {
 		messageReceived[endMessage] = 0;
 		if (debugSerialPort != NULL) {
 			debugSerialPort->println("End of message reached!");
 		}
-		messageRead = true;
-	}
-
-
-
-	// // while (_vescserialPort->available()) {
-	// 	messageReceived[counter++] = _vescserialPort->Read();
-	// 	// debugSerialPort->print("gotbyte, counter: ");debugSerialPort->println(counter);
-	// 	if (counter == 2) {//case if state of 'counter' with last read 1
-	// 		switch (messageReceived[0])
-	// 		{
-	// 		case 2:
-	// 			endMessage = messageReceived[1] + 5; //Payload size + 2 for sice + 3 for SRC and End.
-	// 			lenPayload = messageReceived[1];
-	// 			break;
-	// 		case 3:
-	// 			//ToDo: Add Message Handling > 255 (starting with 3)
-	// 			break;
-	// 		default:
-	// 			debugSerialPort->println("!!");
-	// 			break;
-	// 		}
-	// 	}
-	// 	if (counter >= sizeof(messageReceived))
-	// 	{	// message bffer overflow Handling
-	// 		break;
-	// 	}
-	// 	if (counter == endMessage && messageReceived[endMessage - 1] == 3) {//+1: Because of counter++ state of 'counter' with last read = "endMessage"
-	// 		messageReceived[endMessage] = 0;
-	// 		if (debugSerialPort != NULL) {
-	// 			debugSerialPort->println("End of message reached!");
-	// 		}
-	// 		messageRead = true;
-	// 		break; //Exit if end of message is reached, even if there is still more data in buffer.
-	// 	}
-	// }
-
-
-
-	bool unpacked = false;
-	if (messageRead) {
 		unpacked = UnpackPayload(messageReceived, endMessage, payloadReceived, messageReceived[1]);
 	}
-	else { 
-		if (debugSerialPort != NULL) {
-			debugSerialPort->println("recieved incomplete message!");
-		}
-	}
-	if (unpacked)
-	{
+
+	if (unpacked){
 		return lenPayload; //Message was read
 	}
 	else {
@@ -140,23 +101,17 @@ bool UnpackPayload(uint8_t* message, int lenMes, uint8_t* payload, int lenPay) {
 	if(debugSerialPort!=NULL){
 		debugSerialPort->print("SRC calc: "); debugSerialPort->println(crcPayload);
 	}
-	if (crcPayload == crcMessage)
-	{
-	if(debugSerialPort!=NULL){
-			debugSerialPort->print("Received: "); SerialPrint(message, lenMes); debugSerialPort->println();
-			debugSerialPort->print("Payload :      "); SerialPrint(payload, message[1] - 1); debugSerialPort->println();
-	} // DEBUG
-
+	if (crcPayload == crcMessage){
+		if(debugSerialPort!=NULL){
+				debugSerialPort->print("Received: "); SerialPrint(message, lenMes); debugSerialPort->println();
+				//debugSerialPort->print("Payload :      "); SerialPrint(payload, message[1] - 1); debugSerialPort->println();
+		} // DEBUG
 		return true;
 	}
-	else
-	{
+	else{
 		return false;
 	}
 }
-
-
-
 
 int PackSendPayload(uint8_t* payload, int lenPay, HardwareSerial* _vescserialPort) {
 	uint16_t crcPayload = crc16(payload, lenPay);
@@ -184,12 +139,10 @@ int PackSendPayload(uint8_t* payload, int lenPay, HardwareSerial* _vescserialPor
 
 	if(debugSerialPort!=NULL){
 		debugSerialPort->print("UART package send: "); SerialPrint(messageSend, count);
-
 	} // DEBUG
 
 	//Sending package
 	_vescserialPort->write(messageSend, count);
-
 
 	//Returns number of send bytes
 	return count;
@@ -238,8 +191,7 @@ bool VescUartGetValue(bldcMeasure& values, HardwareSerial* _vescserialPort) {
 	uint8_t payload[256];
 	_vescserialPort->flush(); // move to comm function directly?
 	PackSendPayload(command, 1, _vescserialPort);
-	//delay(10); //needed, otherwise data is not read
-	// recieve now waits for first byte with timeout
+
 	int lenPayload = ReceiveUartMessage(payload, _vescserialPort);
 	if (lenPayload > 1) {
 		bool read = ProcessReadPacket(payload, values, lenPayload); //returns true if sucessful
@@ -358,21 +310,19 @@ void SerialPrint(uint8_t* data, int len) {
 }
 
 
-void SerialPrint(const struct bldcMeasure& values) {
-	debugSerialPort->print("tempFetFiltered:	"); debugSerialPort->println(values.tempFetFiltered);
-	debugSerialPort->print("tempMotorFiltered:"); debugSerialPort->println(values.tempMotorFiltered);
-	debugSerialPort->print("avgMotorCurrent:	"); debugSerialPort->println(values.avgMotorCurrent);
-	debugSerialPort->print("avgInputCurrent:	"); debugSerialPort->println(values.avgInputCurrent);
-	debugSerialPort->print("avgId:			"); debugSerialPort->println(values.avgId);
-	debugSerialPort->print("avgIq:			"); debugSerialPort->println(values.avgIq);
-	debugSerialPort->print("dutyNow:			"); debugSerialPort->println(values.dutyNow);
-	debugSerialPort->print("rpm:				"); debugSerialPort->println(values.rpm);
-	debugSerialPort->print("inpVoltage:		"); debugSerialPort->println(values.inpVoltage);
-	debugSerialPort->print("ampHours:		"); debugSerialPort->println(values.ampHours);
-	debugSerialPort->print("ampHoursCharged:	"); debugSerialPort->println(values.ampHoursCharged);
-	debugSerialPort->print("tachometer:		"); debugSerialPort->println(values.tachometer);
-	debugSerialPort->print("tachometerAbs:	"); debugSerialPort->println(values.tachometerAbs);
-	debugSerialPort->print("faultCode:		"); debugSerialPort->println(values.faultCode);
-
-	
+void SerialPrint(const struct bldcMeasure& values, DEBUG_SERIAL_CLASS*  print_serialPort ) {
+	print_serialPort->print("tempFetFiltered:	"); print_serialPort->println(values.tempFetFiltered);
+	print_serialPort->print("tempMotorFiltered:"); print_serialPort->println(values.tempMotorFiltered);
+	print_serialPort->print("avgMotorCurrent:	"); print_serialPort->println(values.avgMotorCurrent);
+	print_serialPort->print("avgInputCurrent:	"); print_serialPort->println(values.avgInputCurrent);
+	print_serialPort->print("avgId:			"); print_serialPort->println(values.avgId);
+	print_serialPort->print("avgIq:			"); print_serialPort->println(values.avgIq);
+	print_serialPort->print("dutyNow:			"); print_serialPort->println(values.dutyNow);
+	print_serialPort->print("rpm:				"); print_serialPort->println(values.rpm);
+	print_serialPort->print("inpVoltage:		"); print_serialPort->println(values.inpVoltage);
+	print_serialPort->print("ampHours:		"); print_serialPort->println(values.ampHours);
+	print_serialPort->print("ampHoursCharged:	"); print_serialPort->println(values.ampHoursCharged);
+	print_serialPort->print("tachometer:		"); print_serialPort->println(values.tachometer);
+	print_serialPort->print("tachometerAbs:	"); print_serialPort->println(values.tachometerAbs);
+	print_serialPort->print("faultCode:		"); print_serialPort->println(values.faultCode);
 }
