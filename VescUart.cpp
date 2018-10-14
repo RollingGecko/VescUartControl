@@ -46,7 +46,6 @@ int ReceiveUartMessage(uint8_t* payloadReceived, HardwareSerial* _vescserialPort
 	int lenPayload = 0;
 	uint8_t messageReceived[256];
 	const char terminator = 0x03;
-	bool messageRead = false;
 	bool unpacked = false;
 	
 	_vescserialPort->setTimeout(RX_TIMEOUT); // set timeout for messge recieve
