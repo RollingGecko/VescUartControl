@@ -54,17 +54,27 @@ int ReceiveUartMessage(uint8_t* payloadReceived, HardwareSerial* _vescserialPort
 
 		switch (messageReceived[0]){
 		case 2:
-			endMessage = messageReceived[1] + 5; //Payload size + 2 for sice + 3 for SRC and End.
 			lenPayload = messageReceived[1];
+			endMessage = lenPayload + 5; //Payload size + 2 for sice + 3 for SRC and End.
+
 			break;
-		case 3:
-			//ToDo: Add Message Handling > 255 (starting with 3)
+		case 3:   // must be careful that rx buffer does not overflow.
+			// counter +=  _vescserialPort->readBytes(&messageReceived[counter], 1); // get additional payload size byte
+			// lenPayload = (messageReceived[1]<<8) + messageReceived[2]; // is this the right endian?
+			// endMessage = lenPayload + 5; //Payload size + 2 for sice + 3 for SRC and End.
+		
+			// uint8_t* bigmessageReceived[endMessage];
+
+			// memcpy(&messageReceived, &bigmessageReceived, counter+1);
+			// delete [] messageReceived;
+			// messageReceived = bigmessageReceived;
+			// //ToDo: finish Adding Message Handling > 255 (starting with 3)
 			break;
 		default:
 			break;
 		}
 
-	counter +=  _vescserialPort->readBytes(&messageReceived[2], endMessage-2); // get payload, crc, endbyte
+	counter +=  _vescserialPort->readBytes(&messageReceived[counter], endMessage-counter); // get payload, crc, endbyte
 
 	if (counter == endMessage && messageReceived[endMessage - 1] == terminator) {
 		messageReceived[endMessage] = 0;
