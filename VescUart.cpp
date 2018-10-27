@@ -22,20 +22,40 @@ along with this program.If not, see <http://www.gnu.org/licenses/>.
 bool UnpackPayload(uint8_t* message, int lenMes, uint8_t* payload, int lenPa);
 bool ProcessReadPacket(uint8_t* message, bldcMeasure& values, int len);
 
-int ReceiveUartMessage(uint8_t* payloadReceived) {
+//HardwareSerial *serial; ///@param num as integer with the serial port in use (0=Serial; 1=Serial1; 2=Serial2; 3=Serial3;)
+int ReceiveUartMessage(uint8_t* payloadReceived, int num) {
 
 	//Messages <= 255 start with 2. 2nd byte is length
 	//Messages >255 start with 3. 2nd and 3rd byte is length combined with 1st >>8 and then &0xFF
-	 
+
 	int counter = 0;
 	int endMessage = 256;
 	bool messageRead = false;
 	uint8_t messageReceived[256];
 	int lenPayload = 0;
+	HardwareSerial *serial;
+	serial=&Serial;
+	#ifdef __AVR_ATmega2560__
+	switch (num) {
+		case 0:
+			serial=&Serial;
+			break;
+		case 1:
+			serial=&Serial1;
+			break;
+		case 2:
+			serial=&Serial2;
+			break;
+		case 3:
+			serial=&Serial3;
+			break;
+		default:
+			break;
+	}
+	#endif
+	while (serial->available()) {
 
-	while (SERIALIO.available()) {
-
-		messageReceived[counter++] = SERIALIO.read();
+		messageReceived[counter++] = serial->read();
 
 		if (counter == 2) {//case if state of 'counter' with last read 1
 
@@ -62,9 +82,9 @@ int ReceiveUartMessage(uint8_t* payloadReceived) {
 			messageReceived[endMessage] = 0;
 #ifdef DEBUG
 			DEBUGSERIAL.println("End of message reached!");
-#endif			
+#endif
 			messageRead = true;
-			break; //Exit if end of message is reached, even if there is still more data in buffer. 
+			break; //Exit if end of message is reached, even if there is still more data in buffer.
 		}
 	}
 	bool unpacked = false;
@@ -114,7 +134,7 @@ bool UnpackPayload(uint8_t* message, int lenMes, uint8_t* payload, int lenPay) {
 	}
 }
 
-int PackSendPayload(uint8_t* payload, int lenPay) {
+int PackSendPayload(uint8_t* payload, int lenPay, int num) {
 	uint16_t crcPayload = crc16(payload, lenPay);
 	int count = 0;
 	uint8_t messageSend[256];
@@ -143,8 +163,28 @@ int PackSendPayload(uint8_t* payload, int lenPay) {
 
 #endif // DEBUG
 
+
+	HardwareSerial *serial;
+	#ifdef __AVR_ATmega2560__
+	switch (num) {
+		case 0:
+			serial=&Serial;
+			break;
+		case 1:
+			serial=&Serial1;
+			break;
+		case 2:
+			serial=&Serial2;
+			break;
+		case 3:
+			serial=&Serial3;
+			break;
+		default:
+			break;
+	}
+	#endif
 	//Sending package
-	SERIALIO.write(messageSend, count);
+	serial->write(messageSend, count);
 
 
 	//Returns number of send bytes
@@ -176,7 +216,6 @@ bool ProcessReadPacket(uint8_t* message, bldcMeasure& values, int len) {
 		values.tachometerAbs = buffer_get_int32(message, &ind);
 		return true;
 		break;
-
 	default:
 		return false;
 		break;
@@ -184,12 +223,12 @@ bool ProcessReadPacket(uint8_t* message, bldcMeasure& values, int len) {
 
 }
 
-bool VescUartGetValue(bldcMeasure& values) {
+bool VescUartGetValue(bldcMeasure& values, int num) {
 	uint8_t command[1] = { COMM_GET_VALUES };
 	uint8_t payload[256];
-	PackSendPayload(command, 1);
-	delay(100); //needed, otherwise data is not read
-	int lenPayload = ReceiveUartMessage(payload);
+	PackSendPayload(command, 1, num);
+	delay(10); //needed, otherwise data is not read
+	int lenPayload = ReceiveUartMessage(payload, num);
 	if (lenPayload > 55) {
 		bool read = ProcessReadPacket(payload, values, lenPayload); //returns true if sucessful
 		return read;
@@ -199,27 +238,73 @@ bool VescUartGetValue(bldcMeasure& values) {
 		return false;
 	}
 }
-
-void VescUartSetCurrent(float current) {
-	int32_t index = 0;
-	uint8_t payload[5];
-		
-	payload[index++] = COMM_SET_CURRENT ;
-	buffer_append_int32(payload, (int32_t)(current * 1000), &index);
-	PackSendPayload(payload, 5);
+bool VescUartGetValue(bldcMeasure& values) {
+	return VescUartGetValue(values, 0);
 }
 
-void VescUartSetCurrentBrake(float brakeCurrent) {
+void VescUartSetCurrent(float current, int num) {
+	int32_t index = 0;
+	uint8_t payload[5];
+
+	payload[index++] = COMM_SET_CURRENT ;
+	buffer_append_int32(payload, (int32_t)(current * 1000), &index);
+	PackSendPayload(payload, 5, num);
+}
+void VescUartSetCurrent(float current){
+	VescUartSetCurrent(current, 0);
+}
+
+void VescUartSetPosition(float position, int num) {
+	int32_t index = 0;
+	uint8_t payload[5];
+
+	payload[index++] = COMM_SET_POS ;
+	buffer_append_int32(payload, (int32_t)(position * 1000000.0), &index);
+	PackSendPayload(payload, 5, num);
+}
+void VescUartSetPosition(float position) {
+	VescUartSetPosition(position, 0);
+}
+
+void VescUartSetDuty(float duty, int num) {
+	int32_t index = 0;
+	uint8_t payload[5];
+
+	payload[index++] = COMM_SET_DUTY ;
+	buffer_append_int32(payload, (int32_t)(duty * 100000), &index);
+	PackSendPayload(payload, 5, num);
+}
+void VescUartSetDuty(float duty) {
+	VescUartSetDuty(duty, 0);
+}
+
+
+void VescUartSetRPM(float rpm, int num) {
+	int32_t index = 0;
+	uint8_t payload[5];
+
+	payload[index++] = COMM_SET_RPM ;
+	buffer_append_int32(payload, (int32_t)(rpm), &index);
+	PackSendPayload(payload, 5, num);
+}
+void VescUartSetRPM(float rpm) {
+	VescUartSetRPM(rpm, 0);
+}
+
+void VescUartSetCurrentBrake(float brakeCurrent, int num) {
 	int32_t index = 0;
 	uint8_t payload[5];
 
 	payload[index++] = COMM_SET_CURRENT_BRAKE;
 	buffer_append_int32(payload, (int32_t)(brakeCurrent * 1000), &index);
-	PackSendPayload(payload, 5);
-
+	PackSendPayload(payload, 5, num);
+}
+void VescUartSetCurrentBrake(float brakeCurrent) {
+	VescUartSetCurrentBrake(brakeCurrent, 0);
 }
 
-void VescUartSetNunchukValues(remotePackage& data) {
+
+void VescUartSetNunchukValues(remotePackage& data, int num) {
 	int32_t ind = 0;
 	uint8_t payload[11];
 	payload[ind++] = COMM_SET_CHUCK_DATA;
@@ -241,7 +326,10 @@ void VescUartSetNunchukValues(remotePackage& data) {
 	DEBUGSERIAL.print("LowerButton = "); DEBUGSERIAL.print(data.valLowerButton); DEBUGSERIAL.print(" UpperButton = "); DEBUGSERIAL.println(data.valUpperButton);
 #endif
 
-	PackSendPayload(payload, 11);
+	PackSendPayload(payload, 11, num);
+}
+void VescUartSetNunchukValues(remotePackage& data) {
+	VescUartSetNunchukValues(data, 0);
 }
 
 void SerialPrint(uint8_t* data, int len) {
@@ -268,4 +356,3 @@ void SerialPrint(const bldcMeasure& values) {
 	DEBUGSERIAL.print("tachometer: "); DEBUGSERIAL.println(values.tachometer);
 	DEBUGSERIAL.print("tachometerAbs: "); DEBUGSERIAL.println(values.tachometerAbs);
 }
-

@@ -15,7 +15,6 @@ struct bldcMeasure {
 	long tachometer;
 	long tachometerAbs;
 };
-
 //Define remote Package
 
 struct remotePackage {
