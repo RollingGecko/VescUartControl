@@ -1,6 +1,6 @@
 ********************************************************************************************************************
 
-#THE PROJECT  ID DISCONTINUED. I'M SORRY.
+#THE PROJECT  IS DISCONTINUED. I'M SORRY.
 
 If you send me a pull request where you also confirm, that it is well tested, than I will merge it to this project.
 
